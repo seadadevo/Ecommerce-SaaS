@@ -17,7 +17,13 @@ let passwordError = document.querySelector(".passwordError");
 let positionError = document.querySelector(".positionError");
 let phoneError = document.querySelector(".phoneError");
 
-
+const phoneInputField = document.querySelector("#phone");
+const phoneInput = window.intlTelInput(phoneInputField, {
+  utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js",
+  initialCountry: "eg",
+  preferredCountries: ["eg", "sa", "ae", "us"],
+  separateDialCode: true,
+});
 
 submitBtn.addEventListener("click", async (e) => {
   e.preventDefault();
@@ -27,25 +33,21 @@ submitBtn.addEventListener("click", async (e) => {
   const email = emailSelect.value.trim();
   const password = passwordSelect.value.trim();
   const position = positionSelect.value.trim();
-  const phone = phoneSelect.value.trim();
-
+  const fullNumber = phoneInput.getNumber();
 
   
 
-  let regexEmail = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-const regexPassword =
-  /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-
+let regexEmail = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+const regexPassword = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
   
   const errors = [];
   if (!username) errors.push({ element: nameError, message: "Name is required" });
   if (!position) errors.push({ element: positionError, message: "Position is required" });
-  if (!phone) errors.push({ element: phoneError, message: "Phone is required" });
   if (!email) errors.push({ element: emailError, message: "Email is required" });
   else if (!regexEmail.test(email)) errors.push({ element: emailError, message: "Invalid Email" });
   if (!password) errors.push({ element: passwordError, message: "Password is required" });
   else if (!regexPassword.test(password)) errors.push({ element: passwordError, message: "Weak Password" });
-
+  if (!fullNumber) errors.push({ element: phoneError, message: "phone is Empty" });
   if (errors.length > 0) {
     showError(errors);
     return; 
@@ -59,7 +61,7 @@ const regexPassword =
       username,
       email,
       position,
-      phone,
+      fullNumber,
       img: "",
       tasks: []
     });

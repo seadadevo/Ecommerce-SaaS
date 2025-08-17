@@ -39,7 +39,6 @@ submit.addEventListener("click", async (e) => {
 
     if (userDoc.exists()) {
       const userData = userDoc.data();
-      
       localStorage.setItem("isLoggedIn", user.uid);
 
       Swal.fire({
