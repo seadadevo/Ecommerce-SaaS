@@ -7,24 +7,24 @@
     <title>Login Page</title>
     <link rel="stylesheet" href="css/login.css" />
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-    
-</head>
+  </head>
   <body>
-      <div class="container">
-        <form >
-            <h2>Login</h2>
-            <label for="email">Email</label>
-            <input  type="text" id="email" name="email">
-            <span class="errorMessage emailError"></span>
-            <label for="password">password</label>
-            <input type="password" id="password" name="password">
-            <span class="errorMessage passwordError"></span>
-            <button class="btn" type="submit">Login</button>
-            <p>Don't Have Any Account? <a href="signup.html">Sign Up</a></p>
-        </form>
-        
-      </div>
-    <script src="js/login.js"></script>
+    <div class="container">
+      <form>
+        <h2>Login</h2>
+        <label for="email">Email</label>
+        <input type="text" id="email" name="email" />
+        <span class="errorMessage emailError"></span>
+        <label for="password">password</label>
+        <input type="password" id="password" name="password" />
+        <span class="errorMessage passwordError"></span>
+        <button class="btn" type="submit">Login</button>
+        <p>Don't Have Any Account? <a href="signup.html">Sign Up</a></p>
+      </form>
+    </div>
+    <script type="module">
+      import { app, analytics } from "./js/firebaseConfig.js";
+    </script>
+    <script type="module" src="js/login.js"></script>
   </body>
 </html>

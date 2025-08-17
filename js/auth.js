@@ -1,93 +1,89 @@
-let usernameSelect = document.getElementById("name");
-let emailSelect = document.getElementById("email");
-let passwordSelect = document.getElementById("password");
-let positionSelect = document.getElementById("position");
-let phoneSelect = document.getElementById("phone");
+import { auth, db } from "./firebaseConfig.js";
+import { createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+import { doc, setDoc } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 
-let inputs = document.querySelectorAll("input");
+
+const submitBtn = document.querySelector('[type="submit"]');
+const usernameSelect = document.getElementById("name");
+const emailSelect = document.getElementById("email");
+const passwordSelect = document.getElementById("password");
+const positionSelect = document.getElementById("position");
+const phoneSelect = document.getElementById("phone");
 let errorMessages = document.querySelectorAll(".errorMessage");
+
 let nameError = document.querySelector(".nameError");
 let emailError = document.querySelector(".emailError");
 let passwordError = document.querySelector(".passwordError");
 let positionError = document.querySelector(".positionError");
 let phoneError = document.querySelector(".phoneError");
-let submitBtn = document.querySelector('[type = "submit"]');
 
-let regexEmail = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+
+submitBtn.addEventListener("click", async (e) => {
+  e.preventDefault();
+  clearErrors();
+
+  const username = usernameSelect.value.trim();
+  const email = emailSelect.value.trim();
+  const password = passwordSelect.value.trim();
+  const position = positionSelect.value.trim();
+  const phone = phoneSelect.value.trim();
+
+
+  
+
+  let regexEmail = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 const regexPassword =
   /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 
-let users = JSON.parse(localStorage.getItem("users")) || [];
-
-
-// ! for phone input
-const phoneInputField = document.querySelector("#phone");
-
-const phoneInput = window.intlTelInput(phoneInputField, {
-  utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js",
-  initialCountry: "eg",
-  preferredCountries: ["eg", "sa", "ae", "us"],
-  separateDialCode: true,
-});
-// const countryCode = phoneInput.getSelectedCountryData().dialCode;
-
-submitBtn.addEventListener("click", handleSubmit);
-
-function handleSubmit(e) {
-  e.preventDefault();
-  clearErrors();
-  let username = usernameSelect.value.trim();
-  let posisionName = positionSelect.value.trim();
-  let email = emailSelect.value.trim();
-  let password = passwordSelect.value.trim();
-  const fullNumber = phoneInput.getNumber();
-
-  const errors = validateForm(username, email, password, posisionName, fullNumber);
+  
+  const errors = [];
+  if (!username) errors.push({ element: nameError, message: "Name is required" });
+  if (!position) errors.push({ element: positionError, message: "Position is required" });
+  if (!phone) errors.push({ element: phoneError, message: "Phone is required" });
+  if (!email) errors.push({ element: emailError, message: "Email is required" });
+  else if (!regexEmail.test(email)) errors.push({ element: emailError, message: "Invalid Email" });
+  if (!password) errors.push({ element: passwordError, message: "Password is required" });
+  else if (!regexPassword.test(password)) errors.push({ element: passwordError, message: "Weak Password" });
 
   if (errors.length > 0) {
     showError(errors);
-    return;
+    return; 
   }
 
-  createUser(username, email, password, posisionName, fullNumber);
-  resetForm();
+  try {
+    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+    const user = userCredential.user;
 
-  Swal.fire({
-    title: "Account Created",
-    text: "You can now log in.",
-    icon: "success",
-    timer: 2000,
-    showConfirmButton: false,
-  }).then(() => window.location.assign("login.html"));
-}
+    await setDoc(doc(db, "users", user.uid), {
+      username,
+      email,
+      position,
+      phone,
+      img: "",
+      tasks: []
+    });
 
-function validateForm(name, email, password, posisionName, fullNumber) {
-  const errors = [];
-  if (!name) errors.push({ element: nameError, message: "Name is Empty" });
-  if (!posisionName) errors.push({ element: positionError, message: "posisiton is Empty" });
-  if (!fullNumber) errors.push({ element: phoneError, message: "phone is Empty" });
-  if (!email) {
-    errors.push({ element: emailError, message: "Email is Empty" });
-  } else if (!regexEmail.test(email)) {
-    errors.push({ element: emailError, message: "Invalid email format" });
-  }
-  if (!password) {
-    errors.push({ element: passwordError, message: "Password is empty" });
-  } else if (!regexPassword.test(password)) {
-    errors.push({
-      element: passwordError,
-      message: "Password must include letters, numbers, and symbols",
+    Swal.fire({
+      title: "Account Created",
+      text: "You can now log in.",
+      icon: "success",
+      timer: 2000,
+      showConfirmButton: false,
+    }).then(() => window.location.assign("login.html"));
+
+  } catch (error) {
+    console.error(error.message);
+    Swal.fire({
+      title: "Error",
+      text: error.message,
+      icon: "error",
     });
   }
+});
 
-
-  if (users.some((user) => user.email === email)) {
-    errors.push({
-      element: emailError,
-      message: "Email has already been used",
-    });
-  }
-  return errors;
+function clearErrors() {
+  errorMessages.forEach((msg) => (msg.style.cssText = "display: none;"));
 }
 
 function showError(errors) {
@@ -96,33 +92,3 @@ function showError(errors) {
     err.element.style.display = "block";
   });
 }
-
-function clearErrors() {
-  errorMessages.forEach((msg) => (msg.style.cssText = "display: none;"));
-}
-
-function createUser(name, email, password, posisionName, fullNumber) {
-  const newUser = {
-    id: Date.now(),
-    name,
-    email,
-    posisionName,
-    fullNumber,
-    password,
-    img: "",
-    tasks: [],
-  };
-
-  users.push(newUser);
-  saveUsers();
-}
-
-function saveUsers() {
-  localStorage.setItem("users", JSON.stringify(users));
-}
-
-function resetForm() {
-  inputs.forEach((input) => (input.value = ""));
-}
-
-

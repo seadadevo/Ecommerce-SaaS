@@ -1,62 +1,76 @@
-var emailSelect = document.getElementById("email");
-var passwordSelect = document.getElementById("password");
-var inputs = document.querySelectorAll("input");
-var errorMessages = document.querySelectorAll(".errorMessage");
+import { auth, db } from "./firebaseConfig.js";
+import { signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+import { doc, getDoc } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 
-var emailError = document.querySelector(".emailError");
-var passwordError = document.querySelector(".passwordError");
+const emailSelect = document.getElementById("email");
+const passwordSelect = document.getElementById("password");
+const submit = document.querySelector('[type="submit"]');
 
-var submit = document.querySelector('[type = "submit"]');
+const emailError = document.querySelector(".emailError");
+const passwordError = document.querySelector(".passwordError");
+const errorMessages = document.querySelectorAll(".errorMessage");
 
-let users = JSON.parse(localStorage.getItem("users")) || [];
-
-submit.addEventListener("click", (e) => {
+submit.addEventListener("click", async (e) => {
   e.preventDefault();
 
-  errorMessages.forEach((msg) => {
-    msg.style.cssText = "display: none;";
-  });
-  let emailValue = emailSelect.value;
-  let passwordValue = passwordSelect.value;
+  clearErrors();
+
+  const emailValue = emailSelect.value.trim();
+  const passwordValue = passwordSelect.value.trim();
 
   let hasError = false;
 
-  if (emailValue.trim() === "") {
-    showError(emailError, "email is Empty");
+  if (!emailValue) {
+    showError(emailError, "Email is required");
     hasError = true;
   }
-  if (passwordValue.trim() === "") {
-    showError(passwordError, "password is Empty");
+  if (!passwordValue) {
+    showError(passwordError, "Password is required");
     hasError = true;
   }
 
   if (hasError) return;
 
-  let foundUser = users.find((user) => {
-    return (
-      emailValue.trim() === user.email && passwordValue.trim() === user.password
-    );
-  });
+  try {
+    const userCredential = await signInWithEmailAndPassword(auth, emailValue, passwordValue);
+    const user = userCredential.user;
 
-  if (foundUser) {
-    localStorage.setItem("isLoggedIn", foundUser.email);
-    Swal.fire({
-      icon: "success",
-      title: "Welcome Back!",
-      text: `Hello ${foundUser.name}, you have logged in successfully.`,
-      showConfirmButton: false,
-      timer: 2000,
-    }).then(() => {
-      window.location.assign("index.html");
-    });
-  } else {
+    const userDoc = await getDoc(doc(db, "users", user.uid));
+
+    if (userDoc.exists()) {
+      const userData = userDoc.data();
+      
+      localStorage.setItem("isLoggedIn", user.uid);
+
+      Swal.fire({
+        icon: "success",
+        title: "Welcome Back!",
+        text: `Hello ${userData.username}, you have logged in successfully.`,
+        showConfirmButton: false,
+        timer: 2000,
+      }).then(() => {
+        window.location.assign("index.html");
+      });
+    } else {
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "User data not found in database.",
+      });
+    }
+  } catch (error) {
+    console.error(error);
     Swal.fire({
       icon: "error",
-      title: "Oops...",
-      text: "Email or password is incorrect. Please try again.",
+      title: "Login Failed",
+      text: error.message,
     });
   }
 });
+
+function clearErrors() {
+  errorMessages.forEach((msg) => (msg.style.display = "none"));
+}
 
 function showError(element, message) {
   element.textContent = message;
