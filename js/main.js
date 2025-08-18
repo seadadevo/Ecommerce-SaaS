@@ -90,5 +90,36 @@ function displayItem() {
   if (checkCart) checkCart.innerHTML = item_c;
 }
 
-const apiUrl = "https://dummyjson.com/products";
+
+
+// ! delete card
+function removeFromCart(id) {
+  const index = products_cart.findIndex(p => p.id == id);
+  if (index !== -1) {
+    const removedProduct = products_cart[index];
+    products_cart.splice(index, 1);
+    localStorage.setItem("cart", JSON.stringify(products_cart));
+
+    const addButtons = document.querySelectorAll(".btns_add_cart");
+    addButtons.forEach((btn) => {
+      if (btn.dataset.id == removedProduct.id) {
+        btn.classList.remove("active");
+        btn.innerHTML = `<i class="fa-solid fa-cart-shopping"></i> Add To Cart`;
+      }
+    });
+
+    displayItem();
+    getTotalPrice();
+    getCount();
+  }
+}
+
+document.addEventListener("click", (e) => {
+  if (e.target.classList.contains("delete_item")) {
+    const id = e.target.dataset.id;
+    removeFromCart(id);
+  }
+});
+
+
 getData();
