@@ -122,4 +122,67 @@ document.addEventListener("click", (e) => {
 });
 
 
+
+// ! Increase Quantity
+function increaseItem(id, delta) {
+  const item = products_cart.find((p) => p.id == id);
+  if (item) {
+    console.log('quantity: ' ,item.quantity)
+    item.quantity += delta;
+    localStorage.setItem("cart", JSON.stringify(products_cart));
+    displayItem();
+    getTotalPrice();
+    getCount();
+  }
+}
+
+document.addEventListener("click", (e) => {
+  if (e.target.classList.contains("increase_quantity")) {
+    const id = e.target.dataset.id;
+    increaseItem(id, 1);
+  }
+});
+// ! Decrease Quantity
+function decreaseItem(id, delta) {
+  const item = products_cart.find((p) => p.id == id);
+  const index = products_cart.findIndex((p) => p.id == id);
+  if (item && item.quantity > 1) {
+    item.quantity += delta;
+    localStorage.setItem("cart", JSON.stringify(products_cart));
+    displayItem();
+    getTotalPrice();
+    getCount();
+  } else if (item.quantity === 1) {
+    removeFromCart(id);
+  }
+}
+document.addEventListener("click", (e) => {
+  if (e.target.classList.contains("decrease_quantity")) {
+    const id = e.target.dataset.id;
+    console.log(id)
+    console.log(e.target)
+    decreaseItem(id, -1);
+  }
+});
+
+
+// ! Get Total Price
+const price_cart_total = document.querySelector(".price_cart_total");
+function getTotalPrice() {
+  let total = 0;
+  for (let i = 0; i < products_cart.length; i++) {
+    total += products_cart[i].price * products_cart[i].quantity;
+  }
+  price_cart_total.textContent = `$${total}`;
+}
+
+// ! Get Count
+const count_item_header = document.querySelector(".count_item_header");
+const Count_item_cart = document.querySelector(".Count_item_cart");
+function getCount() {
+  count_item_header.textContent = products_cart.length;
+  Count_item_cart.textContent = products_cart.length;
+}
+
+
 getData();
