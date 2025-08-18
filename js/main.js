@@ -1,0 +1,94 @@
+import { getData, all_json_data } from "./modules/products.js";
+const category_btn_menu = document.querySelector(".category_btn");
+const category_nav_list = document.querySelector(".category_nav_list");
+const cart = document.querySelector(".cart");
+const nav_menu = document.querySelector(".nav_links");
+const open_menu = document.querySelector(".open_menu");
+const close_menu = document.querySelector(".close_menu");
+const checkCart = document.querySelector(".items_in_cart1");
+
+const iconOpenCart = document.querySelector(".header_icons .iconOpen");
+const iconCloseCart = document.querySelector(".top_cart .close_cart");
+
+
+
+category_btn_menu.addEventListener("click", () => {
+  category_nav_list.classList.toggle("active");
+});
+open_menu.addEventListener("click", () => {
+  nav_menu.classList.add("active");
+});
+close_menu.addEventListener("click", () => {
+  nav_menu.classList.remove("active");
+});
+
+iconOpenCart.addEventListener("click", () => {
+  cart.classList.add("active");
+});
+iconCloseCart.addEventListener("click", () => {
+  cart.classList.remove("active");
+});
+
+
+const cart_items = document.getElementById("cart_items");
+let products_cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+//
+//
+
+
+// ! Add To cart
+function addToCart(id, btn) {
+  const product = all_json_data.find(p => p.id == id);
+  products_cart.push({ ...product, quantity: 1 });
+
+  console.log(products_cart);
+  localStorage.setItem("cart", JSON.stringify(products_cart));
+
+  btn.classList.add("active");
+  btn.innerHTML = `<i class="fa-solid fa-cart-shopping"></i> Item In Cart`;
+
+  displayItem();  
+  getTotalPrice();
+  getCount();
+}
+
+document.addEventListener("click", (e) => {
+  if (e.target.classList.contains("btns_add_cart")) {
+    const btn = e.target;
+    const id = btn.dataset.id;
+    addToCart(id, btn);
+  }
+});
+
+// ! Display cards
+function displayItem() {
+  let item_c = "";
+  if (products_cart.length === 0) {
+    item_c = `<p class="empty-cart">Your cart is empty</p>`;
+  }
+
+  for (let i = 0; i < products_cart.length; i++) {
+    item_c += `
+      <div class="item_cart">
+        <img src="${products_cart[i].images[0]}" alt="">
+        <div class="content">
+          <h4>${products_cart[i].title}</h4>
+          <p class="price_cart">$${products_cart[i].price}</p>
+          <div class="quantity_control" data-id="${products_cart[i].id}">
+            <button data-id = "${products_cart[i].id}" class="decrease_quantity">-</button>
+            <span class="quantity">${products_cart[i].quantity}</span>
+            <button data-id = "${products_cart[i].id}" class="increase_quantity">+</button>
+          </div>
+        </div>
+        <button><i data-id="${products_cart[i].id}" class="delete_item fa-solid fa-trash-can"></i></button>
+      </div>
+    `;
+  }
+
+  if (cart_items) cart_items.innerHTML = item_c;
+  if (checkCart) checkCart.innerHTML = item_c;
+}
+
+const apiUrl = "https://dummyjson.com/products";
+getData();
