@@ -1,5 +1,6 @@
-
-
+import { db } from "../firebaseConfig.js";
+import { collection, addDoc, getDocs, query, where } 
+  from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 
 const apiUrl = "https://dummyjson.com/products";
 const hotDealsCont =  document.getElementById("swiper_items_sale") 
@@ -12,15 +13,34 @@ export const getData = async (Api = apiUrl) => {
      const categories = data.products.map(product => product.category);
      const uniqueCategories = [...new Set(categories)];
      console.log(uniqueCategories)
-    //  ['beauty', 'fragrances', 'furniture', 'groceries']
-    console.log(data.products)
-    all_json_data = data.products; 
+     //  ['beauty', 'fragrances', 'furniture', 'groceries']
+     await saveProductsToFirebase(data.products);
+     const firebaseProdcuts = await getProductsFromFirebase()
+    all_json_data = firebaseProdcuts; 
     renderUi(all_json_data);
   } catch (error) {
     console.error("Cannot fetching cards", error);
   }
 };
 
+
+async function saveProductsToFirebase(products) {
+  const productsRef = collection(db, "products");
+
+  for (let product of products) {
+    const q = query(productsRef, where('id', '==', product.id));
+    const snapshot = await getDocs(q);
+    if (snapshot.empty) {
+      await addDoc(productsRef, product);
+    }
+  }
+}
+
+async function getProductsFromFirebase() {
+  const productsRef = collection(db, 'products')
+  const snapshot = await getDocs(productsRef);
+  return snapshot.docs.map((doc) => ({id: doc.data().id, ...doc.data()}))
+}
 
 const renderUi = (data) => {
   
