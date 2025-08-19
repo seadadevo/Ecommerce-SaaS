@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Product Details</title>
+    <link rel="stylesheet" href="css/details.css">
+</head>
+<body>
+
+  <div class="product-container">
+    <div class="product-image">
+      <img src="https://via.placeholder.com/300x300" alt="Product Image" id="productImage">
+    </div>
+    <div class="product-info">
+      <h1 id="productTitle">Loading...</h1>
+      <p id="productDescription">Loading...</p>
+      <div>
+        <span class="price" id="productPrice">Loading...</span>
+        <span class="old-price" id="productOldPrice">Loading...</span>
+      </div>
+      <a href="#" class="btn-buy">Buy Now</a>
+    </div>
+  </div>
+   <script type="module">
+      import { app, analytics } from "./js/firebaseConfig.js";
+    </script>
+  <script type="module" src="./js/product_details.js"></script>
+</body>
+</html>

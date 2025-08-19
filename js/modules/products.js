@@ -13,12 +13,14 @@ export const getData = async (Api = apiUrl) => {
      if(firebaseProdcuts.length > 0){
        all_json_data = firebaseProdcuts; 
        renderUi(all_json_data);
+       attachProductLinksEvents()
      } else {
       const res = await fetch(Api);
       const data = await res.json()
       await saveProductsToFirebase(data.products)
       all_json_data = data.products;
       renderUi(all_json_data);
+      attachProductLinksEvents()
      }
   } catch (error) {
     console.error("Cannot fetching cards", error);
@@ -91,12 +93,12 @@ const renderCardContent = (container, product) => {
     <div class="swiper-slide product">
       ${priceCon}
       <div class="img_product">
-          <a href="#" onclick="saveProductDetails(${product.id})">
+          <a href="#">
             <img src="${product.images[0]}" alt="">
           </a>
       </div>
       <p class="name_product">
-          <a href="product.html" target="_blank" onclick="saveProductDetails(${product.id})">
+          <a class = "product-link" data-id = "${product.id}" href="product_details.html" target="_blank">
             ${product.title}
           </a>
       </p>
@@ -112,10 +114,21 @@ const renderCardContent = (container, product) => {
       </div>
     </div>
   `;
+
+  
 };
 
-
-export function saveProductDetails(productId) {
-  const product = all_json_data.find((p) => p.id === productId);
-  localStorage.setItem("selectedProduct", JSON.stringify(product));
+function attachProductLinksEvents() {
+  document.querySelectorAll(".product-link").forEach(link => {
+    link.addEventListener("click", (e) => {
+      const productId = e.currentTarget.dataset.id;
+      localStorage.setItem("selectedProductId", productId);
+    });
+  });
 }
+
+
+// export function saveProductDetails(productId) {
+//   const product = all_json_data.find((p) => p.id === productId);
+//   localStorage.setItem("selectedProduct", JSON.stringify(product));
+// }

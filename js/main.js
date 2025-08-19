@@ -268,4 +268,10 @@ logoutBtn.addEventListener("click", () => {
     });
 });
 
+// ! Product details 
+
+
 getData();
+
+
+
