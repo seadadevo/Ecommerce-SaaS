@@ -8,16 +8,18 @@ const hotDealsCont =  document.getElementById("swiper_items_sale")
 export let all_json_data = [];
 export const getData = async (Api = apiUrl) => {
   try {
-    const res = await fetch(Api);
-    const data = await res.json();
-     const categories = data.products.map(product => product.category);
-     const uniqueCategories = [...new Set(categories)];
-     console.log(uniqueCategories)
      //  ['beauty', 'fragrances', 'furniture', 'groceries']
-     await saveProductsToFirebase(data.products);
      const firebaseProdcuts = await getProductsFromFirebase()
-    all_json_data = firebaseProdcuts; 
-    renderUi(all_json_data);
+     if(firebaseProdcuts.length > 0){
+       all_json_data = firebaseProdcuts; 
+       renderUi(all_json_data);
+     } else {
+      const res = await fetch(Api);
+      const data = await res.json()
+      await saveProductsToFirebase(data.products)
+      all_json_data = data.products;
+      renderUi(all_json_data);
+     }
   } catch (error) {
     console.error("Cannot fetching cards", error);
   }
