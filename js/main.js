@@ -1,4 +1,8 @@
 import { getData, all_json_data } from "./modules/products.js";
+import { auth } from "./firebaseConfig.js";
+import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+
 const category_btn_menu = document.querySelector(".category_btn");
 const category_nav_list = document.querySelector(".category_nav_list");
 const cart = document.querySelector(".cart");
@@ -229,5 +233,43 @@ function handleScroll() {
 const mediaQuery = window.matchMedia("(min-width: 1025px)");
 
 window.addEventListener("scroll", handleScroll);
+
+
+// ! User Status
+
+
+const loginBtn = document.getElementById("loginBtn");
+const logoutBtn = document.getElementById("logoutBtn");
+const signupBtn = document.getElementById("signupBtn");
+
+loginBtn.style.display = "none";
+logoutBtn.style.display = "none";
+signupBtn.style.display = "none";
+
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    
+    loginBtn.style.display = "none";
+    signupBtn.style.display = "none";
+    logoutBtn.style.display = "block";
+    
+  } else {
+    
+    loginBtn.style.display = "block";
+    signupBtn.style.display = "block";
+    logoutBtn.style.display = "none";
+  }
+});
+
+
+logoutBtn.addEventListener("click", () => {
+  signOut(auth).then(() => {
+    console.log("User signed out");
+  }).catch((error) => {
+    console.error(error);
+  });
+});
+
+
 
 getData();
