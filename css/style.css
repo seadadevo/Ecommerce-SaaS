@@ -1107,3 +1107,11 @@ footer .container .row .links a i {
 .checkout .container .orderSum button.place_holder {
   width: 100%;
 }
+
+
+
+.btns_add_cart[disabled] {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}

@@ -1,7 +1,9 @@
 import { getData, all_json_data } from "./modules/products.js";
 import { auth } from "./firebaseConfig.js";
-import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-
+import {
+  onAuthStateChanged,
+  signOut,
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 const category_btn_menu = document.querySelector(".category_btn");
 const category_nav_list = document.querySelector(".category_nav_list");
@@ -33,7 +35,6 @@ iconCloseCart.addEventListener("click", () => {
   cart.classList.remove("active");
 });
 
-
 const cart_items = document.getElementById("cart_items");
 let products_cart = JSON.parse(localStorage.getItem("cart")) || [];
 
@@ -64,10 +65,9 @@ function updateAddButtons() {
   });
 }
 
-
 // ! Add To cart
 function addToCart(id, btn) {
-  const product = all_json_data.find(p => p.id == id);
+  const product = all_json_data.find((p) => p.id == id);
   products_cart.push({ ...product, quantity: 1 });
 
   console.log(products_cart);
@@ -76,13 +76,14 @@ function addToCart(id, btn) {
   btn.classList.add("active");
   btn.innerHTML = `<i class="fa-solid fa-cart-shopping"></i> Item In Cart`;
 
-  displayItem();  
+  displayItem();
   getTotalPrice();
   getCount();
 }
 
 document.addEventListener("click", (e) => {
   if (e.target.classList.contains("btns_add_cart")) {
+    if (e.target.hasAttribute("disabled")) return;
     const btn = e.target;
     const id = btn.dataset.id;
     addToCart(id, btn);
@@ -118,11 +119,9 @@ function displayItem() {
   if (checkCart) checkCart.innerHTML = item_c;
 }
 
-
-
 // ! delete card
 function removeFromCart(id) {
-  const index = products_cart.findIndex(p => p.id == id);
+  const index = products_cart.findIndex((p) => p.id == id);
   if (index !== -1) {
     const removedProduct = products_cart[index];
     products_cart.splice(index, 1);
@@ -149,13 +148,11 @@ document.addEventListener("click", (e) => {
   }
 });
 
-
-
 // ! Increase Quantity
 function increaseItem(id, delta) {
   const item = products_cart.find((p) => p.id == id);
   if (item) {
-    console.log('quantity: ' ,item.quantity)
+    console.log("quantity: ", item.quantity);
     item.quantity += delta;
     localStorage.setItem("cart", JSON.stringify(products_cart));
     displayItem();
@@ -187,12 +184,9 @@ function decreaseItem(id, delta) {
 document.addEventListener("click", (e) => {
   if (e.target.classList.contains("decrease_quantity")) {
     const id = e.target.dataset.id;
-    console.log(id)
-    console.log(e.target)
     decreaseItem(id, -1);
   }
 });
-
 
 // ! Get Total Price
 const price_cart_total = document.querySelector(".price_cart_total");
@@ -211,7 +205,6 @@ function getCount() {
   count_item_header.textContent = products_cart.length;
   Count_item_cart.textContent = products_cart.length;
 }
-
 
 let lastScrollTop = 0;
 const bottomHeader = document.querySelector(".bottom-header");
@@ -234,42 +227,45 @@ const mediaQuery = window.matchMedia("(min-width: 1025px)");
 
 window.addEventListener("scroll", handleScroll);
 
-
 // ! User Status
-
 
 const loginBtn = document.getElementById("loginBtn");
 const logoutBtn = document.getElementById("logoutBtn");
 const signupBtn = document.getElementById("signupBtn");
-
 loginBtn.style.display = "none";
 logoutBtn.style.display = "none";
 signupBtn.style.display = "none";
 
 onAuthStateChanged(auth, (user) => {
+  const addButtons = document.querySelectorAll(".btns_add_cart");
   if (user) {
-    
     loginBtn.style.display = "none";
     signupBtn.style.display = "none";
     logoutBtn.style.display = "block";
-    
+    addButtons.forEach((btn) => {
+      btn.removeAttribute("disabled"); 
+    });
   } else {
-    
     loginBtn.style.display = "block";
     signupBtn.style.display = "block";
     logoutBtn.style.display = "none";
+
+    addButtons.forEach((btn) => {
+      btn.setAttribute('disabled', true)
+    });
+
+    cart_items.innerHTML = `You can't add items please login First`;
   }
 });
 
-
 logoutBtn.addEventListener("click", () => {
-  signOut(auth).then(() => {
-    console.log("User signed out");
-  }).catch((error) => {
-    console.error(error);
-  });
+  signOut(auth)
+    .then(() => {
+      console.log("User signed out");
+    })
+    .catch((error) => {
+      console.error(error);
+    });
 });
-
-
 
 getData();
