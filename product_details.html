@@ -5,12 +5,141 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Product Details</title>
     <link rel="stylesheet" href="css/style.css">
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css"
+    />
 </head>
 <body>
+  
+   <!-- ! Start Cart -->
+    <div class="cart">
+      <div class="top_cart">
+        <h3>Cart Items: <span class="Count_item_cart">0</span></h3>
+        <span class="close_cart"
+          ><i class="fa-regular fa-circle-xmark"></i
+        ></span>
+      </div>
+
+      <div class="items_in_cart" id="cart_items"></div>
+
+      <div class="bottom_cart">
+        <div class="total">
+          <p>subtotal</p>
+          <div class="price_cart_total">$0</div>
+        </div>
+
+        <div class="button_cart">
+          <a href="checkOut.html" class="btn_cart btn1">Checkout</a>
+          <span class="btn_cart trans_bg btn1">Shop More</span>
+        </div>
+      </div>
+    </div>
+    <!-- ! Start Header -->
+    <header>
+      <div class="top_header">
+        <div class="container">
+          <a href="" class="logo">
+            <img src="./img/logo.png" alt="" />
+          </a>
+
+          <form class="search_box">
+            <div class="select_box">
+              <select id="category" name="category">
+                <option value="All Categories">All Categories</option>
+                <option value="Electronics & Digital">
+                  Electronics & Digital
+                </option>
+                <option value="Phones & Tablets">Phones & Tablets</option>
+                <option value="Fashion & Clothings">Fashion & Clothings</option>
+                <option value="Television & Monitor">
+                  Television & Monitor
+                </option>
+                <option value="Watches">Watches</option>
+                <option value="Washing Machine">Washing Machine</option>
+                <option value="Toys & Hobbies">Toys & Hobbies</option>
+              </select>
+            </div>
+            <input
+              type="text"
+              id="search"
+              name="search"
+              placeholder="Search for products"
+              required
+            />
+            <button type="submit">
+              <i class="fa-solid fa-magnifying-glass"></i>
+            </button>
+          </form>
+          <div class="header_icons">
+            <div class="icon">
+              <a href="#">
+                <i class="fa-regular fa-heart"></i>
+                <span class="count count_favorite">0</span>
+              </a>
+            </div>
+            <div class="icon iconOpen">
+              <a href="#">
+                <i class="fa-solid fa-cart-shopping"></i>
+                <span class="count count_item_header">0</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="bottom-header">
+        <div class="container">
+          <nav class="nav">
+            <span class="open_menu">
+              <i class="fa-solid fa-bars"></i>
+            </span>
+            <div class="category_nav">
+              <div class="category_btn">
+                <i class="fa-solid fa-bars"></i>
+                <i class="fa-solid fa-angle-down"></i>
+                <p>Browse Category</p>
+              </div>
+
+              <div class="category_nav_list">
+                <a href="#">Top 10 Offers</a>
+                <a href="#">Electronics & Digital</a>
+                <a href="#">Phones & Tablets</a>
+                <a href="#">Fashion & Clothings</a>
+                <a href="#">Television & Monitor</a>
+                <a href="#">Jewelry & Watches</a>
+                <a href="#">Toys & Hobbies</a>
+              </div>
+            </div>
+
+            <ul class="nav_links">
+              <span class = "close_menu"><i class="fa-regular fa-circle-xmark"></i></span>
+              <li class="active"><a href="/">Home</a></li>
+              <li><a href="/">About</a></li>
+              <li><a href="/">Accessories</a></li>
+              <li><a href="/">Blog</a></li>
+              <li><a href="/">Contact</a></li>
+            </ul>
+          </nav>
+
+          <div class="login_signup btns">
+            <a class="btn" id="loginBtn" href="/login.html"
+              >login <i class="fa-solid fa-right-to-bracket"></i
+            ></a>
+            <a class="btn" id="logoutBtn" href="/login.html"
+              >Logout <i class="fa-solid fa-right-to-bracket"></i
+            ></a>
+            <a class="btn" id="signupBtn" href="/signup.html"
+              >Sign Up <i class="fa-solid fa-user-plus"></i
+            ></a>
+          </div>
+        </div>
+      </div>
+    </header>
 
   <div class="product-container">
     <div class="product-image">
-      <img src="https://via.placeholder.com/300x300" alt="Product Image" id="productImage">
+      <img src="" alt="Product Image" id="productImage">
     </div>
     <div class="product-info">
       <h1 id="productTitle">Loading...</h1>
@@ -19,12 +148,86 @@
         <span class="price" id="productPrice">Loading...</span>
         <span class="old-price" id="productOldPrice">Loading...</span>
       </div>
-      <a href="#" class="btn-buy">Buy Now</a>
+      <!-- <a href="#" class="btn-buy">Add to Cart</a> -->
+
+        <span  class="btns_add_cart btn-buy" data-id=${product.id}>
+              <i class="fa-solid fa-cart-shopping"></i>
+              Add To Cart
+        </span>
     </div>
   </div>
-   <script type="module">
-      import { app, analytics } from "./js/firebaseConfig.js";
+
+  <!-- ! Start Footer -->
+    <footer>
+      <div class="container">
+        <div class="big_row">
+          <img class="logo_footer" src="img/white_logo.png" alt="" />
+          <p>
+            Lorem, ipsum dolor sit amet consectetur adipisicing elit. Commodi,
+            quae?
+          </p>
+          <div class="icons_footer">
+            <a href=""><i class="fa-solid fa-phone"></i></a>
+            <a href=""><i class="fa-brands fa-facebook"></i></a>
+            <a href=""><i class="fa-brands fa-instagram"></i></a>
+            <a href=""><i class="fa-brands fa-x-twitter"></i></a>
+          </div>
+        </div>
+
+        <div class="row">
+          <h4>Find It Fast</h4>
+          <div class="links">
+            <a href=""
+              ><i class="fa-solid fa-caret-right"></i>Laptops & Computers</a
+            >
+            <a href=""
+              ><i class="fa-solid fa-caret-right"></i>Smart Phones & Tablets</a
+            >
+            <a href=""><i class="fa-solid fa-caret-right"></i>TV & Audio</a>
+            <a href=""><i class="fa-solid fa-caret-right"></i>Appliances</a>
+            <a href=""
+              ><i class="fa-solid fa-caret-right"></i>Jewelry & Watches</a
+            >
+          </div>
+        </div>
+
+        <div class="row">
+          <h4>Quick links</h4>
+          <div class="links">
+            <a href=""><i class="fa-solid fa-caret-right"></i>Your Account</a>
+            <a href=""
+              ><i class="fa-solid fa-caret-right"></i>Returns & Exchanges</a
+            >
+            <a href=""
+              ><i class="fa-solid fa-caret-right"></i>Shipping & Delivery</a
+            >
+            <a href=""
+              ><i class="fa-solid fa-caret-right"></i>Estimated Delivery Time</a
+            >
+            <a href=""
+              ><i class="fa-solid fa-caret-right"></i>Purchase History</a
+            >
+          </div>
+        </div>
+
+        <div class="row">
+          <h4>Service Us</h4>
+          <div class="links">
+            <a href=""><i class="fa-solid fa-caret-right"></i>Support Center</a>
+            <a href=""
+              ><i class="fa-solid fa-caret-right"></i>Term & Conditions</a
+            >
+            <a href=""><i class="fa-solid fa-caret-right"></i>Privacy Policy</a>
+            <a href=""><i class="fa-solid fa-caret-right"></i>Help</a>
+            <a href=""><i class="fa-solid fa-caret-right"></i>FAQS</a>
+          </div>
+        </div>
+      </div>
+    </footer>
+  <script type="module">
+    import { app, analytics } from "./js/firebaseConfig.js";
     </script>
-  <script type="module" src="./js/product_details.js"></script>
+      <script type="module" src="./js/main.js"></script>
+    <script type="module" src="./js/product_details.js"></script>
 </body>
 </html>
