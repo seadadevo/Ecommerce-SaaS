@@ -4,7 +4,6 @@ import {
   onAuthStateChanged,
   signOut,
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-
 const category_btn_menu = document.querySelector(".category_btn");
 const category_nav_list = document.querySelector(".category_nav_list");
 const cart = document.querySelector(".cart");
@@ -15,7 +14,6 @@ const checkCart = document.querySelector(".items_in_cart1");
 
 const iconOpenCart = document.querySelector(".header_icons .iconOpen");
 const iconCloseCart = document.querySelector(".top_cart .close_cart");
-
 
 
 category_btn_menu.addEventListener("click", () => {
@@ -37,17 +35,20 @@ iconCloseCart.addEventListener("click", () => {
 
 const cart_items = document.getElementById("cart_items");
 let products_cart = JSON.parse(localStorage.getItem("cart")) || [];
+console.log(products_cart)
 
-window.addEventListener("load", () => {
-  displayItem();
-  getTotalPrice();
-  getCount();
-  updateAddButtons();
-});
+window.addEventListener("load", async () => {
+
+    await getData()
+    displayItem();
+    getTotalPrice();
+    getCount();
+    updateAddButtons();
+  });
+
 
 function updateAddButtons() {
-  const addButtons = document.querySelectorAll(".btns_add_cart");
-
+  const addButtons = document.querySelectorAll('.btns_add_cart')
   addButtons.forEach((btn) => {
     const productId = btn.dataset.id;
     const productInCart = products_cart.find(
@@ -66,7 +67,7 @@ function updateAddButtons() {
 }
 
 // ! Add To cart
-function addToCart(id, btn) {
+export function addToCart(id, btn) {
   const product = all_json_data.find((p) => p.id == id);
   products_cart.push({ ...product, quantity: 1 });
 
@@ -81,15 +82,14 @@ function addToCart(id, btn) {
   getCount();
 }
 
-document.addEventListener("click", (e) => {
-  if (e.target.classList.contains("btns_add_cart")) {
-    if (e.target.hasAttribute("disabled")) return;
-    const btn = e.target;
-    const id = btn.dataset.id;
-    addToCart(id, btn);
-  }
-});
-
+// document.addEventListener("click", (e) => {
+//   if (e.target.classList.contains("btns_add_cart")) {
+//     if (e.target.hasAttribute("disabled")) return;
+//     const btn = e.target;
+//     const id = btn.dataset.id;
+//     addToCart(id, btn);
+//   }
+// });
 // ! Display cards
 function displayItem() {
   let item_c = "";
@@ -271,7 +271,6 @@ logoutBtn.addEventListener("click", () => {
 // ! Product details 
 
 
-getData();
 
 
 

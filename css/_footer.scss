@@ -1,0 +1,126 @@
+footer {
+    background-color: var(--color-heading);
+  
+    .container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      padding: 40px 0;
+      gap: 30px;
+  
+      .big_row {
+        width: 40%;
+  
+        .logo_footer {
+          width: 180px;
+        }
+  
+        p {
+          width: 90%;
+          color: #b1b1b1;
+          font-size: 15px;
+          line-height: 1.5;
+          margin: 15px 0;
+        }
+  
+        .icons_footer {
+          display: flex;
+          gap: 10px;
+  
+          a {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--main-color);
+            border-radius: 3px;
+            position: relative;
+            top: 0;
+            transition: 0.3s;
+  
+            &:hover {
+              top: -5px;
+            }
+  
+            i {
+              color: var(--white-color);
+            }
+          }
+        }
+      }
+  
+      .row {
+        width: 22%;
+  
+        h4 {
+          color: var(--white-color);
+          font-size: 18px;
+          margin-bottom: 20px;
+        }
+  
+        .links {
+          display: flex;
+          flex-direction: column;
+          gap: 7px;
+  
+          a {
+            color: #b1b1b1;
+            font-size: 14px;
+            position: relative;
+            left: 0;
+            transition: 0.3s;
+  
+            &:hover {
+              left: 8px;
+              color: var(--main-color);
+            }
+  
+            i {
+              color: var(--main-color);
+              margin-right: 5px;
+            }
+          }
+        }
+      }
+  
+      // Responsive styles
+      @media (max-width: 992px) {
+        .big_row,
+        .row {
+          width: 48%; // عمودين في السطر
+        }
+      }
+  
+      @media (max-width: 576px) {
+        flex-direction: column;
+        padding: 30px 15px;
+  
+        .big_row,
+        .row {
+          width: 100%; // عمود واحد في السطر
+        }
+  
+        .big_row {
+          text-align: center;
+  
+          .icons_footer {
+            justify-content: center;
+          }
+  
+          p {
+            margin-inline: auto;
+          }
+        }
+  
+        .row {
+          text-align: center;
+  
+          .links {
+            align-items: center;
+          }
+        }
+      }
+    }
+  }
+  

@@ -1,0 +1,36 @@
+:root {
+    --main-color: #ff8716;
+    --p-color: #7b7b7b;
+    --bg-color: #F3F3F3;
+    --white-color: #ffffff;
+    --color-heading: #121416;
+    --border-color: #e5e5e5d5;
+    --se-color: #E51A1A;
+}
+// ! Start Utility
+@import "./utility";
+
+// ! Start Cart
+@import "./cart";
+
+// ! Start Header
+@import "./header";
+
+// ! Start Slide1
+@import "./slide1";
+
+// ! Start Banner
+@import "./banner";
+
+// ! Start Slider For Discount  
+@import './sliderDiscount';
+
+// ! Start Banner
+@import './banner2';
+// ! Start footer
+@import './footer';
+// ! Start CheckOutPage
+@import './checkout';
+// ! Start Product Details
+@import './product_details';
+

@@ -2,6 +2,13 @@ import { db } from "./firebaseConfig.js";
 import { collection, query, where, getDocs } 
   from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 
+
+const productTitle = document.getElementById("productTitle")
+const productDescription = document.getElementById("productDescription")
+const productPrice = document.getElementById("productPrice")
+const productOldPrice = document.getElementById("productOldPrice")
+const productImage = document.getElementById("productImage")
+
 async function loadProductDetails() {
   const productId = localStorage.getItem("selectedProductId");
   console.log("Selected ID:", productId);
@@ -15,11 +22,12 @@ async function loadProductDetails() {
     const product = snapshot.docs[0].data();
     console.log("Product found:", product);
 
-    document.getElementById("productTitle").textContent = product.title;
-    document.getElementById("productDescription").textContent = product.description;
-    document.getElementById("productPrice").textContent = "$" + product.price;
-    document.getElementById("productOldPrice").textContent = "$" + (product.old_price ?? "");
-    document.getElementById("productImage").src = product.images[0];
+    productTitle.textContent = product.title;
+    productDescription.textContent = product.description;
+    productPrice.textContent = "$" + product.price;
+    productOldPrice.textContent = "$" + (product.old_price ?? "");
+    productImage.src = product.images[0];
+    
   } else {
     console.log("No such product!");
   }

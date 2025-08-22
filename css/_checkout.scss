@@ -1,0 +1,113 @@
+.checkout {
+    margin-top: 80px;
+    .container {
+        display: flex;
+        justify-content: space-between;
+        gap: 60px;
+
+        @include media(767px) {
+            flex-direction: column;
+        }
+
+        .deilverAccess {
+            flex: 1;
+
+            .box {
+                margin-bottom: 20px;
+                background-color: #fff;
+                padding-bottom: 10px;
+
+                h2 {
+                    background-color: var(--main-color);
+                    padding: 10px;
+                }
+
+                form {
+                    label {
+                        display: block;
+                        color: var(--parg-color);
+                        margin: 9px 14px 6px 14px;
+                    }
+
+                    input {
+                        display: block;
+                        padding: 11px 20px 11px 10px;
+                        max-width: 100%;
+                        width: 90%;
+                        margin-bottom: 20px;
+                        margin-left: 25px;
+                        border-radius: 5px;
+                        border: 1px solid #ccc;
+                        outline: none;
+                        font-size: 14px;
+                        caret-color: var(--main-color);
+
+                    }
+                }
+
+            }
+
+        }
+
+        .orderSum {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background-color: #fff;
+            margin-bottom: 50px;
+
+            h2 {
+                padding: 20px 0 8px 32px;
+                border-bottom: 1px solid var(--border-color);
+            }
+
+            .items_in_cart {
+                border: 0;
+            }
+
+            .total {
+                margin-top: 30px;
+                padding: 5px;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                border-bottom: 2px solid var(--border-color);
+
+                p {
+                    font-size: 27px;
+                    color: #000;
+                    font-weight: 700;
+
+                    &:last-of-type {
+                        font-size: 22px;
+                        font-weight: 700;
+                        color: #000;
+
+                    }
+                }
+
+            }
+
+            button {
+                width: 10%;
+                padding: 10px;
+                margin-top: 10px;
+                background-color: var(--main-color);
+                color: #fff;
+                border: 0;
+                font-size: 16px;
+                font-weight: 700;
+                cursor: pointer;
+                &.delete_item {
+                    margin-right: 9px;
+                    i{
+                        font-size: 18px;
+                    }
+                }
+                &.place_holder{
+                    width: 100%;
+                }
+            }
+        }
+    }
+}
