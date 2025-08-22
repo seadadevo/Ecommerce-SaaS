@@ -10,7 +10,6 @@ import { addToCart } from "../main.js";
 
 const apiUrl = "https://dummyjson.com/products";
 const hotDealsCont = document.getElementById("swiper_items_sale");
-
 export let all_json_data = [];
 export const getData = async (Api = apiUrl) => {
   try {
@@ -25,9 +24,11 @@ export const getData = async (Api = apiUrl) => {
       all_json_data = data.products;
     }
 
-    renderUi(all_json_data);
-    attachProductLinksEvents();
-    attachAddCartEvents();
+    if(document.getElementById("swiper_items_sale")) {
+      renderUi(all_json_data);
+      attachProductLinksEvents();
+      attachAddCartEvents();
+    }
 
     
   } catch (error) {
@@ -126,10 +127,10 @@ const renderCardContent = (container, product) => {
 
 };
 
-function attachAddCartEvents() {
+export function attachAddCartEvents() {
   const addButtons = document.querySelectorAll(".btns_add_cart")
+  // console.log(addButtons)
   console.log(2)
-  console.log(addButtons)
   addButtons.forEach((btn) => {
     btn.addEventListener("click", () => {
       if (btn.hasAttribute("disabled")) return;

@@ -4,6 +4,8 @@ import {
   onAuthStateChanged,
   signOut,
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+// import { btns_add_cart } from "./product_details.js";
+
 const category_btn_menu = document.querySelector(".category_btn");
 const category_nav_list = document.querySelector(".category_nav_list");
 const cart = document.querySelector(".cart");
@@ -14,7 +16,6 @@ const checkCart = document.querySelector(".items_in_cart1");
 
 const iconOpenCart = document.querySelector(".header_icons .iconOpen");
 const iconCloseCart = document.querySelector(".top_cart .close_cart");
-
 
 category_btn_menu.addEventListener("click", () => {
   category_nav_list.classList.toggle("active");
@@ -34,21 +35,20 @@ iconCloseCart.addEventListener("click", () => {
 });
 
 const cart_items = document.getElementById("cart_items");
-let products_cart = JSON.parse(localStorage.getItem("cart")) || [];
-console.log(products_cart)
+export let products_cart = JSON.parse(localStorage.getItem("cart")) || [];
+console.log(products_cart);
 
 window.addEventListener("load", async () => {
-
-    await getData()
-    displayItem();
-    getTotalPrice();
-    getCount();
-    updateAddButtons();
-  });
-
+  await getData();
+  displayItem();
+  getTotalPrice();
+  getCount();
+  updateAddButtons();
+  authIn()
+});
 
 function updateAddButtons() {
-  const addButtons = document.querySelectorAll('.btns_add_cart')
+  const addButtons = document.querySelectorAll(".btns_add_cart");
   addButtons.forEach((btn) => {
     const productId = btn.dataset.id;
     const productInCart = products_cart.find(
@@ -58,6 +58,7 @@ function updateAddButtons() {
       btn.classList.add("active");
       btn.innerHTML = `<i class="fa-solid fa-cart-shopping"></i>
                               Item In Cart`;
+                              console.log('add')
     } else {
       btn.classList.remove("active");
       btn.innerHTML = ` <i class="fa-solid fa-cart-shopping"></i>
@@ -71,7 +72,7 @@ export function addToCart(id, btn) {
   const product = all_json_data.find((p) => p.id == id);
   products_cart.push({ ...product, quantity: 1 });
 
-  console.log(products_cart);
+  // console.log(products_cart);
   localStorage.setItem("cart", JSON.stringify(products_cart));
 
   btn.classList.add("active");
@@ -96,18 +97,22 @@ function displayItem() {
   if (products_cart.length === 0) {
     item_c = `<p class="empty-cart">Your cart is empty</p>`;
   }
-
   for (let i = 0; i < products_cart.length; i++) {
+    const imageUrl =
+      products_cart[i].images?.[0] ||
+      products_cart[i].thumbnail ||
+      "https://unsplash.com/photos/full-moon-in-a-gradient-pink-and-purple-sky-Wg3-Sh7Zh9w";
+
     item_c += `
       <div class="item_cart">
-        <img src="${products_cart[i].images[0]}" alt="">
+        <img src="${imageUrl}" alt="${products_cart[i].title}">
         <div class="content">
           <h4>${products_cart[i].title}</h4>
           <p class="price_cart">$${products_cart[i].price}</p>
           <div class="quantity_control" data-id="${products_cart[i].id}">
-            <button data-id = "${products_cart[i].id}" class="decrease_quantity">-</button>
+            <button data-id="${products_cart[i].id}" class="decrease_quantity">-</button>
             <span class="quantity">${products_cart[i].quantity}</span>
-            <button data-id = "${products_cart[i].id}" class="increase_quantity">+</button>
+            <button data-id="${products_cart[i].id}" class="increase_quantity">+</button>
           </div>
         </div>
         <button><i data-id="${products_cart[i].id}" class="delete_item fa-solid fa-trash-can"></i></button>
@@ -236,14 +241,17 @@ loginBtn.style.display = "none";
 logoutBtn.style.display = "none";
 signupBtn.style.display = "none";
 
-onAuthStateChanged(auth, (user) => {
+
+function authIn() {
+  
+  onAuthStateChanged(auth, (user) => {
   const addButtons = document.querySelectorAll(".btns_add_cart");
   if (user) {
     loginBtn.style.display = "none";
     signupBtn.style.display = "none";
     logoutBtn.style.display = "block";
     addButtons.forEach((btn) => {
-      btn.removeAttribute("disabled"); 
+      btn.removeAttribute("disabled");
     });
   } else {
     loginBtn.style.display = "block";
@@ -251,10 +259,10 @@ onAuthStateChanged(auth, (user) => {
     logoutBtn.style.display = "none";
 
     addButtons.forEach((btn) => {
-      btn.setAttribute('disabled', true)
+      btn.setAttribute("disabled", true);
     });
-
     cart_items.innerHTML = `You can't add items please login First`;
+    localStorage.removeItem('cart')
   }
 });
 
@@ -267,10 +275,4 @@ logoutBtn.addEventListener("click", () => {
       console.error(error);
     });
 });
-
-// ! Product details 
-
-
-
-
-
+}
