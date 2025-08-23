@@ -7,7 +7,6 @@ import {
   where,
 } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 import { addToCart } from "../main.js";
-
 const apiUrl = "https://dummyjson.com/products";
 
 const hotDealsCont = document.getElementById("swiper_items_sale");
@@ -53,7 +52,7 @@ async function saveProductsToFirebase(products) {
   }
 }
 
-async function getProductsFromFirebase() {
+export async function getProductsFromFirebase() {
   const productsRef = collection(db, "products");
   const snapshot = await getDocs(productsRef);
   return snapshot.docs.map((doc) => (
@@ -101,7 +100,7 @@ const renderUi = (data) => {
   );
 };
 
-const renderCardContent = (container, product) => {
+export const renderCardContent = (container, product) => {
   const percent_price = Math.floor(
     ((product.old_price - product.price) / product.old_price) * 100
   );
@@ -114,7 +113,7 @@ const renderCardContent = (container, product) => {
   <div class="swiper-slide product">
     ${priceCon}
     <div class="img_product">
-        <a href="#">
+        <a href="product_details.html" data-id="${product.id}"  class="product-link">
           <img src="${product.images?.[0] || product.thumbnail}" alt="">
         </a>
     </div>
@@ -149,8 +148,10 @@ export function attachAddCartEvents() {
   });
 }
 
-function attachProductLinksEvents() {
-  document.querySelectorAll(".product-link").forEach((link) => {
+
+
+export function attachProductLinksEvents() {
+  document.querySelectorAll('.product-link').forEach((link) => {
     link.addEventListener("click", (e) => {
       const productId = e.currentTarget.dataset.id;
       localStorage.setItem("selectedProductId", productId);

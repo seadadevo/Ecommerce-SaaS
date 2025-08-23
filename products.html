@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>products</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css"
+    />
+</head>
+<body>
+         <!-- ! Start Cart -->
+    <div class="cart">
+      <div class="top_cart">
+        <h3>Cart Items: <span class="Count_item_cart">0</span></h3>
+        <span class="close_cart"
+          ><i class="fa-regular fa-circle-xmark"></i
+        ></span>
+      </div>
+
+      <div class="items_in_cart" id="cart_items"></div>
+
+      <div class="bottom_cart">
+        <div class="total">
+          <p>subtotal</p>
+          <div class="price_cart_total">$0</div>
+        </div>
+
+        <div class="button_cart">
+          <a href="checkOut.html" class="btn_cart btn1">Checkout</a>
+          <span class="btn_cart trans_bg btn1">Shop More</span>
+        </div>
+      </div>
+    </div>
+    <!-- ! Start Header -->
+    <header>
+      <div class="top_header">
+        <div class="container">
+          <a href="index.html" class="logo">
+            <img src="./img/logo.png" alt="" />
+          </a>
+
+          <form class="search_box">
+            <div class="select_box">
+              <select id="category" name="category">
+                <option value="All Categories">All Categories</option>
+                <option value="Electronics & Digital">
+                  Electronics & Digital
+                </option>
+                <option value="Phones & Tablets">Phones & Tablets</option>
+                <option value="Fashion & Clothings">Fashion & Clothings</option>
+                <option value="Television & Monitor">
+                  Television & Monitor
+                </option>
+                <option value="Watches">Watches</option>
+                <option value="Washing Machine">Washing Machine</option>
+                <option value="Toys & Hobbies">Toys & Hobbies</option>
+              </select>
+            </div>
+            <input
+              type="text"
+              id="search"
+              name="search"
+              placeholder="Search for products"
+              required
+            />
+            <button type="submit">
+              <i class="fa-solid fa-magnifying-glass"></i>
+            </button>
+          </form>
+          <div class="header_icons">
+            <div class="icon">
+              <a href="#">
+                <i class="fa-regular fa-heart"></i>
+                <span class="count count_favorite">0</span>
+              </a>
+            </div>
+            <div class="icon iconOpen">
+              <a href="#">
+                <i class="fa-solid fa-cart-shopping"></i>
+                <span class="count count_item_header">0</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="bottom-header">
+        <div class="container">
+          <nav class="nav">
+            <span class="open_menu">
+              <i class="fa-solid fa-bars"></i>
+            </span>
+            <div class="category_nav">
+              <div class="category_btn">
+                <i class="fa-solid fa-bars"></i>
+                <i class="fa-solid fa-angle-down"></i>
+                <p>Browse Category</p>
+              </div>
+
+              <div class="category_nav_list">
+                <a href="#">Top 10 Offers</a>
+                <a href="#">Electronics & Digital</a>
+                <a href="#">Phones & Tablets</a>
+                <a href="#">Fashion & Clothings</a>
+                <a href="#">Television & Monitor</a>
+                <a href="#">Jewelry & Watches</a>
+                <a href="#">Toys & Hobbies</a>
+              </div>
+            </div>
+
+            <ul class="nav_links">
+              <span class = "close_menu"><i class="fa-regular fa-circle-xmark"></i></span>
+              <li class="active"><a href="index.html">Home</a></li>
+              <li><a href="/">About</a></li>
+              <li><a href="/">Accessories</a></li>
+              <li><a href="/">Blog</a></li>
+              <li><a href="/">Contact</a></li>
+            </ul>
+          </nav>
+
+          <div class="login_signup btns">
+            <a class="btn" id="loginBtn" href="login.html"
+              >login <i class="fa-solid fa-right-to-bracket"></i
+            ></a>
+            <a class="btn" id="logoutBtn" href="login.html"
+              >Logout <i class="fa-solid fa-right-to-bracket"></i
+            ></a>
+            <a class="btn" id="signupBtn" href="signup.html"
+              >Sign Up <i class="fa-solid fa-user-plus"></i
+            ></a>
+          </div>
+        </div>
+      </div>
+    </header>
+    <!-- ! Start Content -->
+    <div class="head">
+      <div class="container">
+        <h2>Experience the Future of Technology.</h2>
+        <p>
+          Find everything you need to transform your life with innovative products and smart solutions. Explore a wide range of devices designed to fit your needs.
+        </p>
+      </div>
+    </div>
+
+    <!-- <div class="downlist">
+      <div class="downlist_menu">
+        <div class="box">
+          <h2>Categories</h2>
+          <ul>
+            <li>
+              <label for="phones">Phones</label>
+              <input id="phones" type="checkbox" />
+            </li>
+            <li>
+              <label for="tablets">Tablets</label>
+              <input id="tablets" type="checkbox" />
+            </li>
+            <li>
+              <label for="electronics">Electronics</label>
+              <input id="electronics" type="checkbox" />
+            </li>
+            <li>
+              <label for="tv">TV</label>
+              <input id="tv" type="checkbox" />
+            </li>
+            <li>
+              <label for="fashion">Fashion</label>
+              <input id="fashion" type="checkbox" />
+            </li>
+            <li>
+              <label for="watches">Watches</label>
+              <input id="watches" type="checkbox" />
+            </li>
+          </ul>
+        </div>
+        <div class="box">
+          <h2>Brand</h2>
+          <ul>
+            <li>
+              <label for="apple">Apple</label>
+              <input id="apple" type="checkbox" />
+            </li>
+            <li>
+              <label for="samsung">Samsung</label>
+              <input id="samsung" type="checkbox" />
+            </li>
+            <li>
+              <label for="inter">Intel</label>
+              <input id="inter" type="checkbox" />
+            </li>
+            <li>
+              <label for="oppo">Oppo</label>
+              <input id="oppo" type="checkbox" />
+            </li>
+            <li>
+              <label for="xiaomi">Xiaomi</label>
+              <input id="xiaomi" type="checkbox" />
+            </li>
+            <li>
+              <label for="huawei">Huawei</label>
+              <input id="huawei" type="checkbox" />
+            </li>
+          </ul>
+        </div>
+        <div class="box">
+          <h2>Color</h2>
+          <div class="color-options">
+            <label>
+              <span class="color-box" style="background-color: red"></span>
+              <input type="checkbox" name="color" value="red" />
+            </label>
+
+            <label>
+              <span
+                class="color-box"
+                style="background-color: blue; width: 20px; height: 20px"
+              ></span>
+              <input type="checkbox" name="color" value="blue" />
+            </label>
+
+            <label>
+              <span class="color-box" style="background-color: black"></span>
+              <input type="checkbox" name="color" value="black" />
+            </label>
+          </div>
+        </div>
+      </div>
+      <button>Apply</button>
+    </div> -->
+
+    <div class="content">
+      <div class="container">
+        <div class="filter">
+          <div class="container">
+            <h2>Filter</h2>
+            <i class="fa-solid fa-filter"></i>
+            <div class="downlist_menu">
+              <div class="box">
+                <h2>Categories</h2>
+                <ul>
+                  <li>
+                    <label for="phones">Phones</label>
+                    <input id="phones" type="checkbox" />
+                  </li>
+                  <li>
+                    <label for="tablets">Tablets</label>
+                    <input id="tablets" type="checkbox" />
+                  </li>
+                  <li>
+                    <label for="electronics">Electronics</label>
+                    <input id="electronics" type="checkbox" />
+                  </li>
+                  <li>
+                    <label for="tv">TV</label>
+                    <input id="tv" type="checkbox" />
+                  </li>
+                  <li>
+                    <label for="fashion">Fashion</label>
+                    <input id="fashion" type="checkbox" />
+                  </li>
+                  <li>
+                    <label for="watches">Watches</label>
+                    <input id="watches" type="checkbox" />
+                  </li>
+                </ul>
+              </div>
+              <div class="box">
+                <h2>Brand</h2>
+                <ul>
+                  <li>
+                    <label for="apple">Apple</label>
+                    <input id="apple" type="checkbox" />
+                  </li>
+                  <li>
+                    <label for="samsung">Samsung</label>
+                    <input id="samsung" type="checkbox" />
+                  </li>
+                  <li>
+                    <label for="inter">Intel</label>
+                    <input id="inter" type="checkbox" />
+                  </li>
+                  <li>
+                    <label for="oppo">Oppo</label>
+                    <input id="oppo" type="checkbox" />
+                  </li>
+                  <li>
+                    <label for="xiaomi">Xiaomi</label>
+                    <input id="xiaomi" type="checkbox" />
+                  </li>
+                  <li>
+                    <label for="huawei">Huawei</label>
+                    <input id="huawei" type="checkbox" />
+                  </li>
+                </ul>
+              </div>
+            
+            </div>
+          </div>
+        </div>
+
+        <section class="container other_product_swiper3"></section>
+      </div>
+      <div class="paginationPage">
+        <i class="fa-solid fa-backward-step"></i>
+        <div class="numbers">
+        </div>
+            
+        <i class="fa-solid fa-forward-step"></i>
+      </div>
+    </div>
+    <script type="module">
+    import { app, analytics } from "./js/firebaseConfig.js";
+    </script>
+    <script type="module" src="./js/modules/product_search.js"></script>
+    <script type="module" src="./js/main.js"></script>
+</body>
+</html>

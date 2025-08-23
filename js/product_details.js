@@ -36,7 +36,7 @@ async function loadProductDetails() {
     console.log("Product found:", product);
 
     const fullbrand = product.brand
-    const brand = fullbrand.split(' ').slice(0,1)
+    const brand = !fullbrand ? "no brand" : fullbrand.split(' ').slice(0,1) ;
     productTitle.textContent = product.title;
     productDescription.textContent = product.description;
     categoryProduct.textContent = product.category;

@@ -63,6 +63,17 @@ body {
     }
 }
 
+@mixin media2($breakpoint) {
+  @media (min-width: $breakpoint){
+    @content
+}
+}
+
+@mixin flex_between() {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
 .container {
     width: 90%;
     margin: auto;

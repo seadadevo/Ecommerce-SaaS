@@ -33,4 +33,39 @@
 @import './product_details';
 // ! Start footer
 @import './footer';
+// ! Start products
+
+.head {
+  .container {
+    text-align: center;
+
+    h2 {
+      font-size: 24px;
+      max-width: 483px;
+      font-weight: 700;
+      color: var(--main-color);
+      margin: auto;
+      margin-bottom: 17px;
+
+      @include media2(767px) {
+        font-size: 36px;
+        max-width: 723px;
+      }
+    }
+
+    p {
+      font-size: 12px;
+      font-weight: 450;
+      max-width: 322px;
+      margin: auto;
+
+      @include media2(767px) {
+        font-size: 18px;
+        max-width: 517px;
+      }
+    }
+  }
+}
+@import './container_filter';
+// @import './downlistFilter';
 
