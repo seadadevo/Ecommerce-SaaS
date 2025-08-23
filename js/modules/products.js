@@ -9,8 +9,11 @@ import {
 import { addToCart } from "../main.js";
 
 const apiUrl = "https://dummyjson.com/products";
+
 const hotDealsCont = document.getElementById("swiper_items_sale");
+
 export let all_json_data = [];
+
 export const getData = async (Api = apiUrl) => {
   try {
     const firebaseProdcuts = await getProductsFromFirebase();
@@ -23,7 +26,6 @@ export const getData = async (Api = apiUrl) => {
       await saveProductsToFirebase(data.products);
       all_json_data = data.products;
     }
-
     if(document.getElementById("swiper_items_sale")) {
       renderUi(all_json_data);
       attachProductLinksEvents();
@@ -129,8 +131,6 @@ const renderCardContent = (container, product) => {
 
 export function attachAddCartEvents() {
   const addButtons = document.querySelectorAll(".btns_add_cart")
-  // console.log(addButtons)
-  console.log(2)
   addButtons.forEach((btn) => {
     btn.addEventListener("click", () => {
       if (btn.hasAttribute("disabled")) return;
@@ -148,8 +148,3 @@ function attachProductLinksEvents() {
     });
   });
 }
-
-// export function saveProductDetails(productId) {
-//   const product = all_json_data.find((p) => p.id === productId);
-//   localStorage.setItem("selectedProduct", JSON.stringify(product));
-// }

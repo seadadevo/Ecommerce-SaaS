@@ -8,7 +8,7 @@ import {
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { addToCart, products_cart } from "./main.js";
 
-// عناصر الصفحة
+
 const productTitle = document.getElementById("productTitle");
 const productDescription = document.getElementById("productDescription");
 const productPrice = document.getElementById("productPrice");

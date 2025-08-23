@@ -1,10 +1,24 @@
-import { getData, all_json_data } from "./modules/products.js";
-import { auth } from "./firebaseConfig.js";
+import {
+  getData,
+  all_json_data,
+  attachAddCartEvents,
+} from "./modules/products.js";
+import { db, auth } from "./firebaseConfig.js";
+import {
+  doc,
+  getDoc,
+  setDoc,
+  updateDoc,
+  collection,
+  getDocs,
+  query,
+  where,
+  onSnapshot,
+} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 import {
   onAuthStateChanged,
   signOut,
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-// import { btns_add_cart } from "./product_details.js";
 
 const category_btn_menu = document.querySelector(".category_btn");
 const category_nav_list = document.querySelector(".category_nav_list");
@@ -34,9 +48,53 @@ iconCloseCart.addEventListener("click", () => {
   cart.classList.remove("active");
 });
 
+let products_cart = [];
 const cart_items = document.getElementById("cart_items");
-export let products_cart = JSON.parse(localStorage.getItem("cart")) || [];
-console.log(products_cart);
+
+async function getUserData(uid) {
+  const useRef = doc(db, "users", uid);
+  const snap = await getDoc(useRef);
+  if (snap.exists()) {
+    return snap.data();
+  } else {
+    return null;
+  }
+}
+
+// async function getAllProducts() {
+//   try {
+//     const colRef = collection(db, "products");
+//     const snap = await getDocs(colRef);
+//     return snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+//   } catch (error) {
+//     console.error("Error getting products from FireBase: ", error);
+//     return [];
+//   }
+// }
+
+// let allProducts = await getAllProducts()
+
+onAuthStateChanged(auth, async (user) => {
+  if (user) {
+    const userData = await getUserData(user.uid);
+    console.log("user data:, ", userData);
+    products_cart = userData?.products_cart ?? [];
+
+    displayItem();
+    getTotalPrice();
+    getCount();
+    updateAddButtons();
+    attachAddCartEvents();
+  } else {
+    products_cart = JSON.parse(localStorage.getItem("cart")) || [];
+    console.log("Cart from localStorage:", products_cart);
+    displayItem();
+    getTotalPrice();
+    getCount();
+    updateAddButtons();
+  }
+});
+
 
 window.addEventListener("load", async () => {
   await getData();
@@ -44,7 +102,7 @@ window.addEventListener("load", async () => {
   getTotalPrice();
   getCount();
   updateAddButtons();
-  authIn()
+  initaAuthUi();
 });
 
 function updateAddButtons() {
@@ -58,7 +116,7 @@ function updateAddButtons() {
       btn.classList.add("active");
       btn.innerHTML = `<i class="fa-solid fa-cart-shopping"></i>
                               Item In Cart`;
-                              console.log('add')
+      console.log("add");
     } else {
       btn.classList.remove("active");
       btn.innerHTML = ` <i class="fa-solid fa-cart-shopping"></i>
@@ -67,30 +125,42 @@ function updateAddButtons() {
   });
 }
 
-// ! Add To cart
-export function addToCart(id, btn) {
-  const product = all_json_data.find((p) => p.id == id);
-  products_cart.push({ ...product, quantity: 1 });
-
-  // console.log(products_cart);
-  localStorage.setItem("cart", JSON.stringify(products_cart));
-
-  btn.classList.add("active");
-  btn.innerHTML = `<i class="fa-solid fa-cart-shopping"></i> Item In Cart`;
-
-  displayItem();
-  getTotalPrice();
-  getCount();
+async function persistCart() {
+  const user = auth.currentUser;
+  if (user) {
+    const userRef = doc(db, "users", user.uid);
+    await updateDoc(userRef, { products_cart });
+  } else {
+    localStorage.setItem("cart", JSON.stringify(products_cart));
+  }
 }
 
-// document.addEventListener("click", (e) => {
-//   if (e.target.classList.contains("btns_add_cart")) {
-//     if (e.target.hasAttribute("disabled")) return;
-//     const btn = e.target;
-//     const id = btn.dataset.id;
-//     addToCart(id, btn);
-//   }
-// });
+// ! Add To cart
+export async function addToCart(id, btn) {
+  const product = all_json_data.find((p) => p.id == id);
+  if (!product) {
+    console.error("Product not found with ID:", id);
+    return;
+  }
+
+  const existingIndex = products_cart.findIndex((p) => p.id == id);
+  if (existingIndex === -1) {
+    products_cart.push({ ...product});
+
+    
+   await persistCart()
+    if (btn) {
+      btn.classList.add("active");
+      btn.innerHTML = `<i class="fa-solid fa-cart-shopping"></i> Item In Cart`;
+    }
+    displayItem();
+    getTotalPrice();
+    getCount();
+  } else {
+    console.log("product already in cart");
+  }
+}
+
 // ! Display cards
 function displayItem() {
   let item_c = "";
@@ -124,13 +194,13 @@ function displayItem() {
   if (checkCart) checkCart.innerHTML = item_c;
 }
 
-// ! delete card
-function removeFromCart(id) {
+// ! remove card
+async function removeFromCart(id) {
   const index = products_cart.findIndex((p) => p.id == id);
-  if (index !== -1) {
+  if(index === -1) return;
     const removedProduct = products_cart[index];
     products_cart.splice(index, 1);
-    localStorage.setItem("cart", JSON.stringify(products_cart));
+    await persistCart()
 
     const addButtons = document.querySelectorAll(".btns_add_cart");
     addButtons.forEach((btn) => {
@@ -139,11 +209,9 @@ function removeFromCart(id) {
         btn.innerHTML = `<i class="fa-solid fa-cart-shopping"></i> Add To Cart`;
       }
     });
-
     displayItem();
     getTotalPrice();
     getCount();
-  }
 }
 
 document.addEventListener("click", (e) => {
@@ -153,13 +221,15 @@ document.addEventListener("click", (e) => {
   }
 });
 
+
+
 // ! Increase Quantity
-function increaseItem(id, delta) {
+async function increaseItem(id, delta) {
   const item = products_cart.find((p) => p.id == id);
+  if (!item) return;  
   if (item) {
-    console.log("quantity: ", item.quantity);
     item.quantity += delta;
-    localStorage.setItem("cart", JSON.stringify(products_cart));
+    await persistCart()
     displayItem();
     getTotalPrice();
     getCount();
@@ -173,18 +243,22 @@ document.addEventListener("click", (e) => {
   }
 });
 // ! Decrease Quantity
-function decreaseItem(id, delta) {
+async function decreaseItem(id, delta = -1) {
   const item = products_cart.find((p) => p.id == id);
-  const index = products_cart.findIndex((p) => p.id == id);
-  if (item && item.quantity > 1) {
+ if (!item) return;
+
+  if (item.quantity > 1) {
     item.quantity += delta;
-    localStorage.setItem("cart", JSON.stringify(products_cart));
+    await persistCart()
     displayItem();
     getTotalPrice();
     getCount();
   } else if (item.quantity === 1) {
-    removeFromCart(id);
+    await removeFromCart(id);
+    return;
   }
+
+  
 }
 document.addEventListener("click", (e) => {
   if (e.target.classList.contains("decrease_quantity")) {
@@ -234,45 +308,47 @@ window.addEventListener("scroll", handleScroll);
 
 // ! User Status
 
-const loginBtn = document.getElementById("loginBtn");
-const logoutBtn = document.getElementById("logoutBtn");
-const signupBtn = document.getElementById("signupBtn");
-loginBtn.style.display = "none";
-logoutBtn.style.display = "none";
-signupBtn.style.display = "none";
-
-
-function authIn() {
-  
+function initaAuthUi() {
+  const loginBtn = document.getElementById("loginBtn");
+  const logoutBtn = document.getElementById("logoutBtn");
+  const signupBtn = document.getElementById("signupBtn");
+  loginBtn.style.display = "none";
+  logoutBtn.style.display = "none";
+  signupBtn.style.display = "none";
   onAuthStateChanged(auth, (user) => {
-  const addButtons = document.querySelectorAll(".btns_add_cart");
-  if (user) {
-    loginBtn.style.display = "none";
-    signupBtn.style.display = "none";
-    logoutBtn.style.display = "block";
-    addButtons.forEach((btn) => {
-      btn.removeAttribute("disabled");
-    });
-  } else {
-    loginBtn.style.display = "block";
-    signupBtn.style.display = "block";
-    logoutBtn.style.display = "none";
+    const addButtons = document.querySelectorAll(".btns_add_cart");
+    if (user) {
+      loginBtn.style.display = "none";
+      signupBtn.style.display = "none";
+      logoutBtn.style.display = "block";
+      addButtons.forEach((btn) => {
+        btn.removeAttribute("disabled");
+      });
+    } else {
+      loginBtn.style.display = "block";
+      signupBtn.style.display = "block";
+      logoutBtn.style.display = "none";
 
-    addButtons.forEach((btn) => {
-      btn.setAttribute("disabled", true);
-    });
-    cart_items.innerHTML = `You can't add items please login First`;
-    localStorage.removeItem('cart')
-  }
-});
+      addButtons.forEach((btn) => {
+        btn.setAttribute("disabled", true);
+      });
+      cart_items.innerHTML = `You can't add items please login First`;
+    }
+  });
 
-logoutBtn.addEventListener("click", () => {
-  signOut(auth)
-    .then(() => {
-      console.log("User signed out");
-    })
-    .catch((error) => {
-      console.error(error);
-    });
-});
+  logoutBtn.addEventListener("click", () => {
+    signOut(auth)
+      .then(() => {
+        console.log("User signed out");
+        products_cart = [];
+        localStorage.removeItem("cart");
+        displayItem();
+        getTotalPrice();
+        getCount();
+        updateAddButtons();
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  });
 }
