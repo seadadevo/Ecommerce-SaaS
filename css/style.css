@@ -1033,6 +1033,29 @@ header .bottom-header .container .btns .btn:hover {
   display: flex;
   flex-direction: column;
   justify-content: center;
+  position: relative;
+}
+.product-info .brandProduct {
+  position: absolute;
+  left: 50%;
+  transform: rotate(-30deg) translate(-50%, -50%);
+  font-size: 66px;
+  opacity: 0.6;
+  font-weight: bold;
+  color: #9f6868;
+}
+.product-info .head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.product-info .head #categoryProduct {
+  background: red;
+  color: #fff;
+  padding: 8px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-style: italic;
 }
 
 .product-info h1 {

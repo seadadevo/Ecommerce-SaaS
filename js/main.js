@@ -48,7 +48,7 @@ iconCloseCart.addEventListener("click", () => {
   cart.classList.remove("active");
 });
 
-let products_cart = [];
+export let products_cart = [];
 const cart_items = document.getElementById("cart_items");
 
 async function getUserData(uid) {
@@ -60,19 +60,6 @@ async function getUserData(uid) {
     return null;
   }
 }
-
-// async function getAllProducts() {
-//   try {
-//     const colRef = collection(db, "products");
-//     const snap = await getDocs(colRef);
-//     return snap.docs.map((d) => ({ id: d.id, ...d.data() }));
-//   } catch (error) {
-//     console.error("Error getting products from FireBase: ", error);
-//     return [];
-//   }
-// }
-
-// let allProducts = await getAllProducts()
 
 onAuthStateChanged(auth, async (user) => {
   if (user) {
@@ -145,7 +132,7 @@ export async function addToCart(id, btn) {
 
   const existingIndex = products_cart.findIndex((p) => p.id == id);
   if (existingIndex === -1) {
-    products_cart.push({ ...product});
+    products_cart.push({ ...product, quantity: 1});
 
     
    await persistCart()
@@ -274,7 +261,7 @@ function getTotalPrice() {
   for (let i = 0; i < products_cart.length; i++) {
     total += products_cart[i].price * products_cart[i].quantity;
   }
-  price_cart_total.textContent = `$${total}`;
+  price_cart_total.textContent = `$${total.toFixed(2)}`;
 }
 
 // ! Get Count

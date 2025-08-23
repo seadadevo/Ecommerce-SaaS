@@ -14,6 +14,8 @@ const productDescription = document.getElementById("productDescription");
 const productPrice = document.getElementById("productPrice");
 const productOldPrice = document.getElementById("productOldPrice");
 const productImage = document.getElementById("productImage");
+const categoryProduct = document.getElementById("categoryProduct");
+const brandProduct = document.querySelector(".brandProduct");
 const btns_add_cart = document.querySelector(".btn-buy");
 
 let currentUser = null;
@@ -33,12 +35,16 @@ async function loadProductDetails() {
     const product = snapshot.docs[0].data();
     console.log("Product found:", product);
 
+    const fullbrand = product.brand
+    const brand = fullbrand.split(' ').slice(0,1)
     productTitle.textContent = product.title;
     productDescription.textContent = product.description;
+    categoryProduct.textContent = product.category;
+    brandProduct.textContent = brand
     productPrice.textContent = "$" + product.price;
     productOldPrice.textContent = "$" + (product.old_price ?? "");
     productImage.src = product.images[0];
-
+ 
     if (btns_add_cart) {
       btns_add_cart.setAttribute("data-id", currentProductId);
 
