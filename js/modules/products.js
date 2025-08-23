@@ -12,22 +12,21 @@ const apiUrl = "https://dummyjson.com/products";
 
 const hotDealsCont = document.getElementById("swiper_items_sale");
 
-export let all_json_data = [];
+export let allData = [];
 
 export const getData = async (Api = apiUrl) => {
   try {
-    const firebaseProdcuts = await getProductsFromFirebase();
+    let firebaseProdcuts = await getProductsFromFirebase();
     if (firebaseProdcuts.length > 0) {
-      all_json_data = firebaseProdcuts;
-      console.log(1)
+      allData = firebaseProdcuts;
     } else {
       const res = await fetch(Api);
       const data = await res.json();
       await saveProductsToFirebase(data.products);
-      all_json_data = data.products;
+      allData = data.products;
     }
     if(document.getElementById("swiper_items_sale")) {
-      renderUi(all_json_data);
+      renderUi(allData);
       attachProductLinksEvents();
       attachAddCartEvents();
     }
@@ -42,10 +41,14 @@ async function saveProductsToFirebase(products) {
   const productsRef = collection(db, "products");
  
   for (let product of products) {
-    const q = query(productsRef, where("id", "==", product.id));
+    const q = query(productsRef, where("externalId", "==", product.id));
     const snapshot = await getDocs(q);
     if (snapshot.empty) {
-      await addDoc(productsRef, product);
+      await addDoc(productsRef, {
+        ...product,
+        externalId: product.id,
+        source: "dummyjson"
+      });
     }
   }
 }
@@ -53,7 +56,10 @@ async function saveProductsToFirebase(products) {
 async function getProductsFromFirebase() {
   const productsRef = collection(db, "products");
   const snapshot = await getDocs(productsRef);
-  return snapshot.docs.map((doc) => ({ id: doc.data().id, ...doc.data() }));
+  return snapshot.docs.map((doc) => (
+    { id: doc.id,
+       ...doc.data() })
+  );
 }
 
 const renderUi = (data) => {
@@ -82,13 +88,16 @@ const renderUi = (data) => {
     renderCardContent(hotDealsCont, product)
   );
   beautySec.forEach((product) =>
-    renderCardContent(document.getElementById("swiper_electronics"), product)
+    renderCardContent(document.getElementById("swiper_beauty"), product)
   );
   fragrancesSec.forEach((product) =>
-    renderCardContent(document.getElementById("swiper_appliances"), product)
+    renderCardContent(document.getElementById("swiper_fragrances"), product)
   );
   furnitureSec.forEach((product) =>
-    renderCardContent(document.getElementById("swiper_mobiles"), product)
+    renderCardContent(document.getElementById("swiper_furniture"), product)
+  );
+  groceriesSec.forEach((product) =>
+    renderCardContent(document.getElementById("swiper_groceries"), product)
   );
 };
 

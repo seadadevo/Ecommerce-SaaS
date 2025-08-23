@@ -1,6 +1,6 @@
 import {
   getData,
-  all_json_data,
+  allData,
   attachAddCartEvents,
 } from "./modules/products.js";
 import { db, auth } from "./firebaseConfig.js";
@@ -124,7 +124,7 @@ async function persistCart() {
 
 // ! Add To cart
 export async function addToCart(id, btn) {
-  const product = all_json_data.find((p) => p.id == id);
+  const product = allData.find((p) => p.id == id);
   if (!product) {
     console.error("Product not found with ID:", id);
     return;
