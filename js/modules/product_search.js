@@ -167,7 +167,6 @@ function filteredByBrand(brand) {
 function filterByMoreChecked() {
   let checkedBoxes = document.querySelectorAll('input[type="checkbox"]:checked');
   
-
   if (checkedBoxes.length === 0) {
     return firebaseProducts;
   }
