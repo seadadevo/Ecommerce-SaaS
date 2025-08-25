@@ -7,7 +7,7 @@ import {
   where,
 } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 import { addToCart } from "../main.js";
-const apiUrl = "https://dummyjson.com/products";
+export const apiUrl = "https://dummyjson.com/products";
 
 const hotDealsCont = document.getElementById("swiper_items_sale");
 
@@ -24,13 +24,11 @@ export const getData = async (Api = apiUrl) => {
       await saveProductsToFirebase(data.products);
       allData = data.products;
     }
-    if(document.getElementById("swiper_items_sale")) {
+    if (document.getElementById("swiper_items_sale")) {
       renderUi(allData);
       attachProductLinksEvents();
       attachAddCartEvents();
     }
-
-    
   } catch (error) {
     console.error("Cannot fetching cards", error);
   }
@@ -38,7 +36,7 @@ export const getData = async (Api = apiUrl) => {
 
 async function saveProductsToFirebase(products) {
   const productsRef = collection(db, "products");
- 
+
   for (let product of products) {
     const q = query(productsRef, where("externalId", "==", product.id));
     const snapshot = await getDocs(q);
@@ -46,7 +44,7 @@ async function saveProductsToFirebase(products) {
       await addDoc(productsRef, {
         ...product,
         externalId: product.id,
-        source: "dummyjson"
+        source: "dummyjson",
       });
     }
   }
@@ -55,10 +53,7 @@ async function saveProductsToFirebase(products) {
 export async function getProductsFromFirebase() {
   const productsRef = collection(db, "products");
   const snapshot = await getDocs(productsRef);
-  return snapshot.docs.map((doc) => (
-    { id: doc.id,
-       ...doc.data() })
-  );
+  return snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
 }
 
 const renderUi = (data) => {
@@ -109,22 +104,32 @@ export const renderCardContent = (container, product) => {
       ? ` <span class="sale_present">${percent_price}%</span>`
       : "";
 
-  container.insertAdjacentHTML("beforeend", `
+  container.insertAdjacentHTML(
+    "beforeend",
+    `
   <div class="swiper-slide product">
     ${priceCon}
     <div class="img_product">
-        <a href="product_details.html" data-id="${product.id}"  class="product-link">
+        <a href="product_details.html" data-id="${
+          product.id
+        }"  class="product-link">
           <img src="${product.images?.[0] || product.thumbnail}" alt="">
         </a>
     </div>
     <p class="name_product">
-        <a class="product-link" data-id="${product.id}" href="product_details.html" target="_blank">
+        <a class="product-link" data-id="${
+          product.id
+        }" href="product_details.html" target="_blank">
           ${product.title}
         </a>
     </p>
     <div class="price">
         <p><span>$${product.price}</span></p>
-        <p class="old_price">${container == hotDealsCont && product.old_price ? product.old_price : ""}</p>
+        <p class="old_price">${
+          container == hotDealsCont && product.old_price
+            ? product.old_price
+            : ""
+        }</p>
     </div>
     <div class="icons">
         <span class="btns_add_cart" data-id="${product.id}">
@@ -133,12 +138,12 @@ export const renderCardContent = (container, product) => {
         </span>
     </div>
   </div>
-`);
-
+`
+  );
 };
 
 export function attachAddCartEvents() {
-  const addButtons = document.querySelectorAll(".btns_add_cart")
+  const addButtons = document.querySelectorAll(".btns_add_cart");
   addButtons.forEach((btn) => {
     btn.addEventListener("click", () => {
       if (btn.hasAttribute("disabled")) return;
@@ -148,10 +153,8 @@ export function attachAddCartEvents() {
   });
 }
 
-
-
 export function attachProductLinksEvents() {
-  document.querySelectorAll('.product-link').forEach((link) => {
+  document.querySelectorAll(".product-link").forEach((link) => {
     link.addEventListener("click", (e) => {
       const productId = e.currentTarget.dataset.id;
       localStorage.setItem("selectedProductId", productId);

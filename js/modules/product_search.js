@@ -1,5 +1,5 @@
 import { makeSearch } from "../main.js";
-import { renderCardContent } from "./products.js";
+import { apiUrl, renderCardContent } from "./products.js";
 import { getProductsFromFirebase } from "./products.js";
 import { attachProductLinksEvents, attachAddCartEvents } from "./products.js";
 import { updateAddButtons } from "../main.js";
@@ -21,7 +21,7 @@ if (searchResults.length > 0) {
 let productsToDisplay = searchResults.length > 0 ? searchResults : firebaseProducts;
 let productsCount = productsToDisplay.length;
 let currentIndex = 1;
-let productsPerPage = 9;
+let productsPerPage = 6;
 let totalPages = Math.ceil(productsCount / productsPerPage);
 
 if (searchResults.length > 0) {
@@ -97,3 +97,117 @@ if (searchInput) {
 }
 
 makeSearch();
+
+
+
+
+let categoryBox = document.querySelector('.categoryBox')
+let brandBox = document.querySelector('.brandBox')
+
+// let allCheck = document.querySelectorAll('[type="checkbox"]')
+//   console.log(allCheck)
+async function getCategoriesOrBrands(type) {
+  try {
+    let res = await fetch(apiUrl);
+    let data = await res.json();
+    
+    if (type === "categories") {
+      return [...new Set(data.products.map((product) => product.category))];
+    }
+    if (type === "brands") {
+      return [...new Set(data.products
+        .filter((product) => product.brand)
+        .map((product) => product.brand))];
+    }
+  } catch (error) {
+    console.error("Error fetching categories/brands:", error);
+    return [];
+  }
+}
+
+function renderCheckBoxes(type, container) {
+  if (!container) return;
+  
+  getCategoriesOrBrands(type).then((items) => {
+    let ul = document.createElement('ul');
+    items.forEach((item) => {
+      if (!item) return; 
+      let li = document.createElement('li');
+      li.innerHTML = `
+      <label for="${type}_${item.replace(/\s+/g, '_')}">${item}</label>
+        <input id="${type}_${item.replace(/\s+/g, '_')}" 
+               data-value="${item}" 
+               type="checkbox" />
+      `;
+      ul.appendChild(li);
+    });
+    
+    container.appendChild(ul);
+  });
+}
+
+
+function clearThePage(){ 
+  if(paginationContainer) {
+    paginationContainer.style.display = "none";
+  }
+  if(other_product_swiper3) {
+    other_product_swiper3.innerHTML = ''
+  }
+}
+
+function filteredByCategory(category) {
+  return firebaseProducts.filter((product) => product.category === category  )
+}
+function filteredByBrand(brand) {
+  return firebaseProducts.filter((product) => product.brand === brand  )
+}
+
+
+function displayProductsByFiltered(filteredProducts) {
+  if(!other_product_swiper3) return;
+
+  other_product_swiper3.innerHTML = ""
+  filteredProducts.forEach((product) => {
+    renderCardContent(other_product_swiper3, product);
+  })
+  attachAddCartEvents();
+  attachProductLinksEvents();
+  updateAddButtons()
+}
+
+function setupFilteredEvents() {
+  if(categoryBox) {
+    categoryBox.addEventListener('change', (e) => {
+      if(e.target.type === 'checkbox' && e.target.checked) {
+        clearThePage()
+        const filtered = filteredByCategory(e.target.dataset.value)
+        displayProductsByFiltered(filtered)
+      } else if(e.target.type === 'checkbox' && !e.target.checked){
+        displayProducts(currentIndex)
+        if(paginationContainer) {
+          paginationContainer.style.display = 'flex';
+        }
+      }
+    })
+  }
+   if (brandBox) {
+    brandBox.addEventListener('change', (e) => {
+      if (e.target.type === 'checkbox' && e.target.checked) {
+        clearThePage();
+        const filtered = filteredByBrand(e.target.dataset.value);
+        displayProductsByFiltered(filtered);
+      } else if (e.target.type === 'checkbox' && !e.target.checked) {
+        displayProducts(currentIndex);
+        if (paginationContainer) {
+          paginationContainer.style.display = "flex";
+        }
+      }
+    });
+  }
+}
+setTimeout(() => {
+  renderCheckBoxes('categories', categoryBox)
+  renderCheckBoxes('brands', brandBox)
+  setupFilteredEvents()
+}, 100)
