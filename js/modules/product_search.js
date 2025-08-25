@@ -135,7 +135,8 @@ function renderCheckBoxes(type, container) {
       let li = document.createElement('li');
       li.innerHTML = `
       <label for="${type}_${item.replace(/\s+/g, '_')}">${item}</label>
-        <input id="${type}_${item.replace(/\s+/g, '_')}" 
+         <input id="${type}_${item.replace(/\s+/g, '_')}" 
+               data-type="${type}"
                data-value="${item}" 
                type="checkbox" />
       `;
@@ -163,6 +164,31 @@ function filteredByBrand(brand) {
   return firebaseProducts.filter((product) => product.brand === brand  )
 }
 
+function filterByMoreChecked() {
+  let checkedBoxes = document.querySelectorAll('input[type="checkbox"]:checked');
+  
+
+  if (checkedBoxes.length === 0) {
+    return firebaseProducts;
+  }
+  
+  let filteredProducts = firebaseProducts.filter(product => {
+    
+    return Array.from(checkedBoxes).some(box => {
+      const boxType = box.dataset.type;
+      const boxValue = box.dataset.value;
+      
+      if (boxType === 'categories') {
+        return product.category === boxValue;
+      } else if (boxType === 'brands') {
+        return product.brand === boxValue;
+      }
+      return false;
+    });
+  });
+  
+  return filteredProducts;
+}
 
 function displayProductsByFiltered(filteredProducts) {
   if(!other_product_swiper3) return;
@@ -177,34 +203,25 @@ function displayProductsByFiltered(filteredProducts) {
 }
 
 function setupFilteredEvents() {
-  if(categoryBox) {
-    categoryBox.addEventListener('change', (e) => {
-      if(e.target.type === 'checkbox' && e.target.checked) {
-        clearThePage()
-        const filtered = filteredByCategory(e.target.dataset.value)
-        displayProductsByFiltered(filtered)
-      } else if(e.target.type === 'checkbox' && !e.target.checked){
+    function handleFilterChange() {
+      const filtered = filterByMoreChecked()
+      if(filtered.length === firebaseProducts.length) {
         displayProducts(currentIndex)
-        if(paginationContainer) {
+        if(paginationContainer){
           paginationContainer.style.display = 'flex';
         }
+      } else {
+        clearThePage()
+        displayProductsByFiltered(filtered)
       }
-    })
-  }
-   if (brandBox) {
-    brandBox.addEventListener('change', (e) => {
-      if (e.target.type === 'checkbox' && e.target.checked) {
-        clearThePage();
-        const filtered = filteredByBrand(e.target.dataset.value);
-        displayProductsByFiltered(filtered);
-      } else if (e.target.type === 'checkbox' && !e.target.checked) {
-        displayProducts(currentIndex);
-        if (paginationContainer) {
-          paginationContainer.style.display = "flex";
-        }
-      }
-    });
-  }
+    }
+
+     document.addEventListener('change', (e) => {
+    if (e.target.type === 'checkbox' && 
+        (e.target.closest('.categoryBox') || e.target.closest('.brandBox'))) {
+      handleFilterChange();
+    }
+  });
 }
 setTimeout(() => {
   renderCheckBoxes('categories', categoryBox)
