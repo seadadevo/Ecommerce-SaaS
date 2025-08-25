@@ -2,6 +2,7 @@ import {
   getData,
   allData,
   attachAddCartEvents,
+  renderCardContent,
 } from "./modules/products.js";
 import { db, auth } from "./firebaseConfig.js";
 import {
@@ -19,6 +20,7 @@ import {
   onAuthStateChanged,
   signOut,
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
 
 const category_btn_menu = document.querySelector(".category_btn");
 const category_nav_list = document.querySelector(".category_nav_list");
@@ -92,9 +94,9 @@ window.addEventListener("load", async () => {
   initaAuthUi();
 });
 
-function updateAddButtons() {
-  const addButtons = document.querySelectorAll(".btns_add_cart");
-  addButtons.forEach((btn) => {
+export function updateAddButtons() {
+  // const addButtons = document.querySelectorAll(".btns_add_cart");
+  document.querySelectorAll(".btns_add_cart").forEach((btn) => {
     const productId = btn.dataset.id;
     const productInCart = products_cart.find(
       (product) => product.id == productId
@@ -339,3 +341,27 @@ function initaAuthUi() {
       });
   });
 }
+
+// ! Search
+let searchInput = document.querySelector('[name="search"]');
+let submitSearch = document.querySelector('[type="submit"]');
+
+export function makeSearch() {
+  if (submitSearch && searchInput) {
+    submitSearch.addEventListener('click', (e) => {
+      e.preventDefault();
+  
+      const inputValue = searchInput.value.trim();
+      if (!inputValue) return;
+  
+      const theProductSearch = allData.filter((product) =>
+        product.title.toLowerCase().includes(inputValue.toLowerCase())
+      );
+  
+      localStorage.setItem("searchResults", JSON.stringify(theProductSearch));
+      localStorage.setItem('searchQuery', inputValue);
+      window.location.href = "products.html";
+    });
+  }
+}
+makeSearch();
