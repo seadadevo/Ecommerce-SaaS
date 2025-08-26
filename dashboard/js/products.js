@@ -3,6 +3,8 @@ import {
   addDoc,
   collection,
   getDocs,
+  deleteDoc,
+  doc,
 } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 
 let tbodyCont = document.querySelector("tbody");
@@ -24,19 +26,24 @@ export async function getAllData(Api = apiUrl) {
   try {
     const productsRef = collection(db, "products");
     const snapshot = await getDocs(productsRef);
-    const productLists = snapshot.docs.map((doc) => doc.data());
+
+    const productLists = snapshot.docs.map((docSnap) => ({
+      id: docSnap.id,
+      ...docSnap.data(),
+    }));
+
     return productLists;
   } catch (error) {
     console.error("Cannot fetching cards", error);
   }
 }
-
 let firebasData = await getAllData();
 
 let end = 10;
 let shrinkedData = firebasData.slice(0, end);
 
 function renderTheData(thedata) {
+  console.log(2);
   thedata.forEach((product) => {
     let tr = document.createElement("tr");
     let imageUrl = Array.isArray(product.images)
@@ -54,11 +61,22 @@ function renderTheData(thedata) {
         <td class="product_Edit" data-id = '${
           product.id
         }'><a href="#" class="edit">Edit</a></td>
-        <td class="product_update" data-id = '${
+        <td class="product_Delete" data-id = '${
           product.id
         }'><a href="#" class="delete">Delete</a></td>
     `;
     tbodyCont.appendChild(tr);
+
+    tr.querySelector(".delete").addEventListener("click", async (e) => {
+      e.preventDefault();
+      try {
+        await deleteDoc(doc(db, "products", product.id));
+        firebasData = firebasData.filter((p) => p.id !== product.id);
+        tr.remove();
+      } catch (error) {
+        console.error("Error deleting: ", error);
+      }
+    });
   });
 }
 
@@ -86,10 +104,14 @@ addProductBtn.addEventListener("click", () => {
 });
 closeModelBtn.addEventListener("click", (e) => {
   e.preventDefault();
+  closeAddProductModel();
+});
+
+function closeAddProductModel() {
   addProductForm.reset();
   overlay.classList.remove("active");
   AddModal.classList.remove("active");
-});
+}
 
 addProductForm.addEventListener("submit", async (e) => {
   e.preventDefault();
@@ -116,9 +138,7 @@ addProductForm.addEventListener("submit", async (e) => {
     firebasData.push({ ...newProduct, id: docRef.id });
     tbodyCont.innerHTML = "";
     renderTheData(firebasData.slice(0, end));
-    overlay.classList.remove("active");
-    AddModal.classList.remove("active");
-    addProductForm.reset();
+    closeAddProductModel();
   } catch (error) {
     console.error("Error adding document: ", error);
   }
