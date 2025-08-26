@@ -1,0 +1,92 @@
+ .sidebar {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        max-width: 100%;
+        width: 50px;
+        padding: 10px;
+        box-shadow: 0 0 10px #ddd;
+        max-height: 100%;
+        overflow: hidden;
+        
+        h3 {
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        ul {
+            li {
+                padding: 10px;
+                transition: 0.3s;
+
+                &:hover {
+                    background-color: #f6f6f6c2;
+                    border-radius: 10px;
+                }
+
+                a {
+                    display: inline-block;
+
+                    i {
+                        color: #000;
+                    }
+
+                    span {
+                        display: none;
+                    }
+                }
+            }
+        }
+        
+    }
+
+
+@media (min-width: 768px) {
+        .sidebar {
+            width: 210px;
+          
+            h3 {
+                font-size: 25px;
+                position: relative;
+
+                &::before,
+                &::after {
+                    content: '';
+                    position: absolute;
+                    background-color: #000;
+                    transform: translateX(-50%);
+                    left: 50%;
+                }
+                
+                &::before {
+                    height: 2px;
+                    bottom: -20px;
+                    width: 90px;
+                }
+
+                &::after {
+                    height: 15px;
+                    width: 15px;
+                    bottom: -27px;
+                    border-radius: 50%;
+                }
+            }
+
+            ul {
+                li {
+                    a {
+                        display: flex;
+                        align-items: center;
+                        justify-content: flex-start;
+                        gap: 22px;
+
+                        span {
+                            display: block;
+                            color: #000;
+                            font-size: 15px;
+                        }
+                    }
+                }
+            }
+        }
+    }

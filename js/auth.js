@@ -63,7 +63,9 @@ const regexPassword = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
       position,
       fullNumber,
       img: "",
-      products_cart: []
+      products_cart: [],
+      role: "user",
+      createdAt: new Date().toISOString()
     });
 
     Swal.fire({

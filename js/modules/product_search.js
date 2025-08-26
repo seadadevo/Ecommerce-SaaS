@@ -157,16 +157,9 @@ function clearThePage(){
   }
 }
 
-function filteredByCategory(category) {
-  return firebaseProducts.filter((product) => product.category === category  )
-}
-function filteredByBrand(brand) {
-  return firebaseProducts.filter((product) => product.brand === brand  )
-}
-
 function filterByMoreChecked() {
   let checkedBoxes = document.querySelectorAll('input[type="checkbox"]:checked');
-  
+
   if (checkedBoxes.length === 0) {
     return firebaseProducts;
   }

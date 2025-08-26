@@ -1,6 +1,9 @@
 import { auth, db } from "./firebaseConfig.js";
 import { signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
-import { doc, getDoc } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
+import {
+  doc,
+  getDoc,
+} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 
 const emailSelect = document.getElementById("email");
 const passwordSelect = document.getElementById("password");
@@ -32,24 +35,44 @@ submit.addEventListener("click", async (e) => {
   if (hasError) return;
 
   try {
-    const userCredential = await signInWithEmailAndPassword(auth, emailValue, passwordValue);
+    const userCredential = await signInWithEmailAndPassword(
+      auth,
+      emailValue,
+      passwordValue
+    );
     const user = userCredential.user;
 
     const userDoc = await getDoc(doc(db, "users", user.uid));
 
     if (userDoc.exists()) {
       const userData = userDoc.data();
-      localStorage.setItem("isLoggedIn", user.uid);
 
-      Swal.fire({
-        icon: "success",
-        title: "Welcome Back!",
-        text: `Hello ${userData.username}, you have logged in successfully.`,
-        showConfirmButton: false,
-        timer: 2000,
-      }).then(() => {
-        window.location.assign("index.html");
-      });
+      if (userData.role === "Admin") {
+        localStorage.setItem("uid", user.uid);
+        localStorage.setItem("role", userData.role);
+        userData.products_cart = []
+        Swal.fire({
+          icon: "success",
+          title: "Welcome Back!",
+          text: `Hello Mr ${userData.username}, you have logged in successfully.`,
+          showConfirmButton: false,
+          timer: 2000,
+        }).then(() => {
+          window.location.assign("dashboard/index.html");
+        });
+      } else if (userData.role === "user") {
+        localStorage.setItem("uid", user.uid);
+        localStorage.setItem("role", userData.role);
+        Swal.fire({
+          icon: "success",
+          title: "Welcome Back!",
+          text: `Hello ${userData.username}, you have logged in successfully.`,
+          showConfirmButton: false,
+          timer: 2000,
+        }).then(() => {
+          window.location.assign("index.html");
+        });
+      }
     } else {
       Swal.fire({
         icon: "error",
