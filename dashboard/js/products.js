@@ -28,7 +28,7 @@ export async function getAllData(Api = apiUrl) {
     const snapshot = await getDocs(productsRef);
 
     const productLists = snapshot.docs.map((docSnap) => ({
-      id: docSnap.id,
+      firebaseId: docSnap.id,
       ...docSnap.data(),
     }));
 
@@ -55,14 +55,14 @@ function renderTheData(thedata) {
         <td class="product_image"><img width="100" src="${
           imageUrl || ".../img/ahmedlogo.webp"
         }" alt="#"></td>
-        <td class="product_category">${product.category}</td>
-        <td class="product_brand">${product.brand}</td>
-        <td class="product_stock">${product.stock}</td>
+        <td class="product_category">${product.category || '####'}</td>
+        <td class="product_brand">${product.brand || '####'}</td>
+        <td class="product_stock">${product.stock || "it's empty"}</td>
         <td class="product_Edit" data-id = '${
           product.id
         }'><a href="#" class="edit">Edit</a></td>
         <td class="product_Delete" data-id = '${
-          product.id
+          product.firebaseId
         }'><a href="#" class="delete">Delete</a></td>
     `;
     tbodyCont.appendChild(tr);
@@ -70,8 +70,8 @@ function renderTheData(thedata) {
     tr.querySelector(".delete").addEventListener("click", async (e) => {
       e.preventDefault();
       try {
-        await deleteDoc(doc(db, "products", product.id));
-        firebasData = firebasData.filter((p) => p.id !== product.id);
+        await deleteDoc(doc(db, "products", product.firebaseId));
+        firebasData = firebasData.filter((p) => p.id !== product.firebaseId);
         tr.remove();
       } catch (error) {
         console.error("Error deleting: ", error);
@@ -135,7 +135,7 @@ addProductForm.addEventListener("submit", async (e) => {
 
   try {
     const docRef = await addDoc(collection(db, "products"), newProduct);
-    firebasData.push({ ...newProduct, id: docRef.id });
+    firebasData.push({ ...newProduct, firebaseId: docRef.id });
     tbodyCont.innerHTML = "";
     renderTheData(firebasData.slice(0, end));
     closeAddProductModel();
@@ -143,3 +143,4 @@ addProductForm.addEventListener("submit", async (e) => {
     console.error("Error adding document: ", error);
   }
 });
+
