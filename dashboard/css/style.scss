@@ -54,7 +54,7 @@ ul {
 }
 
 /* Start Sidebar */
-
+@import './profileModel';
 main {
   min-height: 100vh;
   width: 100%;
@@ -124,7 +124,7 @@ main {
         }
     }
     }
-
+    
     @import "./product_table";
 
     .showMoreBtn{ 

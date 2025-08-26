@@ -1,64 +1,125 @@
-import { db } from "../../js/firebaseConfig.js"
-import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
+import { db } from "../../js/firebaseConfig.js";
+import {
+  addDoc,
+  collection,
+  getDocs,
+} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 
-let tbodyCont = document.querySelector('tbody')
-let showMoreBtn = document.querySelector('.showMoreBtn')
-let searchInput = document.querySelector('[type="search"]')
-
+let tbodyCont = document.querySelector("tbody");
+let showMoreBtn = document.querySelector(".showMoreBtn");
+let searchInput = document.querySelector('[type="search"]');
+let addProductBtn = document.querySelector(".addProductBtn");
+let closeModelBtn = document.querySelector(".closeBtn");
+let overlay = document.querySelector(".overlay");
+let AddModal = document.getElementById("profileModal");
+let AddModelBtn = document.querySelector(".SaveBtn");
+let addProductForm = document.querySelector(".addProductForm");
+let allInputAddProduct = document.querySelectorAll(".addProductForm input");
+console.log(allInputAddProduct);
 export const apiUrl = "https://dummyjson.com/products";
 
-export let theAllData = []
+export let theAllData = [];
 
 export async function getAllData(Api = apiUrl) {
-    try {
-        const productsRef = collection(db, 'products');
-        const snapshot = await getDocs(productsRef)
-        const productLists = snapshot.docs.map(doc => doc.data());
-        return productLists
-    } catch (error) {
-        console.error("Cannot fetching cards", error);
-    }
+  try {
+    const productsRef = collection(db, "products");
+    const snapshot = await getDocs(productsRef);
+    const productLists = snapshot.docs.map((doc) => doc.data());
+    return productLists;
+  } catch (error) {
+    console.error("Cannot fetching cards", error);
+  }
 }
 
-
-let firebasData = await getAllData()
+let firebasData = await getAllData();
 
 let end = 10;
-let shrinkedData = firebasData.slice(0, end)
+let shrinkedData = firebasData.slice(0, end);
 
-function renderTheData (thedata) {
-     thedata.forEach(product => {
-    let tr = document.createElement('tr')
+function renderTheData(thedata) {
+  thedata.forEach((product) => {
+    let tr = document.createElement("tr");
+    let imageUrl = Array.isArray(product.images)
+      ? product.images[0]
+      : product.images;
     tr.innerHTML = `
         <td class="product_name">${product.title}</td>
         <td class="product_price">${product.price}$</td>
-        <td class="product_image"><img width="100" src="${product.images[0]}" alt="#"></td>
+        <td class="product_image"><img width="100" src="${
+          imageUrl || ".../img/ahmedlogo.webp"
+        }" alt="#"></td>
         <td class="product_category">${product.category}</td>
         <td class="product_brand">${product.brand}</td>
         <td class="product_stock">${product.stock}</td>
-        <td class="product_Edit"><a href="#" class="edit">Edit</a></td>
-        <td class="product_update"><a href="#" class="delete">Delete</a></td>
-    `
-    tbodyCont.appendChild(tr)
-});
+        <td class="product_Edit" data-id = '${
+          product.id
+        }'><a href="#" class="edit">Edit</a></td>
+        <td class="product_update" data-id = '${
+          product.id
+        }'><a href="#" class="delete">Delete</a></td>
+    `;
+    tbodyCont.appendChild(tr);
+  });
 }
 
-renderTheData(shrinkedData)
+renderTheData(shrinkedData);
 
-showMoreBtn.addEventListener('click', () => {
-    end += 5;
-    shrinkedData = firebasData.slice(0, end)
-    tbodyCont.innerHTML = ''
-    renderTheData(shrinkedData)
-})
+showMoreBtn.addEventListener("click", () => {
+  end += 5;
+  shrinkedData = firebasData.slice(0, end);
+  tbodyCont.innerHTML = "";
+  renderTheData(shrinkedData);
+});
 
-searchInput.addEventListener('input', () => {
-    const value = searchInput.value.toLowerCase();
-    const filterdData = firebasData.filter(product =>
-        product.title.toLowerCase().includes(value)
-    );
-    tbodyCont.innerHTML = ''
-    renderTheData(filterdData)
-})
+searchInput.addEventListener("input", () => {
+  const value = searchInput.value.toLowerCase();
+  const filterdData = firebasData.filter((product) =>
+    product.title.toLowerCase().includes(value)
+  );
+  tbodyCont.innerHTML = "";
+  renderTheData(filterdData);
+});
 
+addProductBtn.addEventListener("click", () => {
+  overlay.classList.add("active");
+  AddModal.classList.add("active");
+});
+closeModelBtn.addEventListener("click", (e) => {
+  e.preventDefault();
+  addProductForm.reset();
+  overlay.classList.remove("active");
+  AddModal.classList.remove("active");
+});
 
+addProductForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const nameInput = addProductForm.querySelector("#name");
+  const priceInput = addProductForm.querySelector("#price");
+  const imageInput = addProductForm.querySelector("#image");
+
+  if (!nameInput.value || !priceInput.value || !imageInput.value) {
+    alert("Please fill in all required fields");
+    return;
+  }
+  let newProduct = {
+    title: nameInput.value,
+    price: Number(priceInput.value),
+    images: imageInput.value,
+    brand: addProductForm.querySelector("#brand").value,
+    category: addProductForm.querySelector("#category").value,
+    stock: Number(addProductForm.querySelector("#stock").value),
+  };
+
+  try {
+    const docRef = await addDoc(collection(db, "products"), newProduct);
+    firebasData.push({ ...newProduct, id: docRef.id });
+    tbodyCont.innerHTML = "";
+    renderTheData(firebasData.slice(0, end));
+    overlay.classList.remove("active");
+    AddModal.classList.remove("active");
+    addProductForm.reset();
+  } catch (error) {
+    console.error("Error adding document: ", error);
+  }
+});
