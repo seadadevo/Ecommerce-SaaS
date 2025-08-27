@@ -55,8 +55,8 @@ function renderTheData(thedata) {
         <td class="product_image"><img width="100" src="${
           imageUrl || ".../img/ahmedlogo.webp"
         }" alt="#"></td>
-        <td class="product_category">${product.category || '####'}</td>
-        <td class="product_brand">${product.brand || '####'}</td>
+        <td class="product_category">${product.category || "####"}</td>
+        <td class="product_brand">${product.brand || "####"}</td>
         <td class="product_stock">${product.stock || "it's empty"}</td>
         <td class="product_Edit" data-id = '${
           product.id
@@ -68,15 +68,33 @@ function renderTheData(thedata) {
     tbodyCont.appendChild(tr);
 
     tr.querySelector(".delete").addEventListener("click", async (e) => {
-      e.preventDefault();
+  e.preventDefault();
+
+  Swal.fire({
+    title: "Are you sure you want to delete this product?",
+    text: "This action cannot be undone!",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonText: "Yes, delete it",
+    cancelButtonText: "Cancel",
+    reverseButtons: true,
+  }).then(async (result) => {
+    if (result.isConfirmed) {
       try {
         await deleteDoc(doc(db, "products", product.firebaseId));
         firebasData = firebasData.filter((p) => p.id !== product.firebaseId);
         tr.remove();
+
+        Swal.fire("Deleted!", "The product has been removed.", "success");
       } catch (error) {
         console.error("Error deleting: ", error);
+        Swal.fire("Error", "Failed to delete product.", "error");
       }
-    });
+    } else {
+      Swal.fire("Cancelled", "The product is safe.", "info");
+    }
+  });
+});
   });
 }
 
@@ -143,4 +161,3 @@ addProductForm.addEventListener("submit", async (e) => {
     console.error("Error adding document: ", error);
   }
 });
-
