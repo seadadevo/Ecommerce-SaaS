@@ -80,4 +80,11 @@ padding: 20px;
   border-radius: 10px;
   border: 1px solid #eaeaea;
   cursor: pointer;
+  color: #fff;
+}
+#profileModal .container .buttons button:nth-child(1) {
+  background-color: #2e1ed2;
+}
+#profileModal .container .buttons button:nth-child(2) {
+  background-color: red;
 }
