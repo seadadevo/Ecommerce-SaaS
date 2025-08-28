@@ -7,9 +7,11 @@ import {
 import { db, auth } from "./firebaseConfig.js";
 import {
   doc,
-  getDoc,
-  setDoc,
   updateDoc,
+  getDoc,
+  addDoc,
+  serverTimestamp,
+  setDoc,
   collection,
   getDocs,
   query,
@@ -33,6 +35,7 @@ const btn_cart_check = document.querySelector('.btn_cart_check');
 const iconOpenCart = document.querySelector(".header_icons .iconOpen");
 const iconCloseCart = document.querySelector(".top_cart .close_cart");
 
+// ! Scroll to top Btn
 const scrollBtn = document.getElementById("scrollTopBtn");
 
 window.onscroll = function() {
@@ -50,6 +53,7 @@ scrollBtn.addEventListener("click", () => {
   });
 });
 
+// ! Some Open and Close 
 category_btn_menu.addEventListener("click", () => {
   category_nav_list.classList.toggle("active");
 });
@@ -69,7 +73,7 @@ iconCloseCart.addEventListener("click", () => {
 
 export let products_cart = [];
 const cart_items = document.getElementById("cart_items");
-
+//  ! get user Data from users Collection
 async function getUserData(uid) {
   const useRef = doc(db, "users", uid);
   const snap = await getDoc(useRef);
@@ -79,7 +83,7 @@ async function getUserData(uid) {
     return null;
   }
 }
-
+// ! make an Authenticate for each User
 onAuthStateChanged(auth, async (user) => {
   if (user) {
     const userData = await getUserData(user.uid);
@@ -345,7 +349,7 @@ function initaAuthUi() {
   logoutBtn.addEventListener("click", () => {
     signOut(auth)
       .then(() => {
-        console.log("User signed out");
+        console.log("user signed out");
         products_cart = [];
         localStorage.removeItem("cart");
         displayItem();
@@ -382,3 +386,78 @@ export function makeSearch() {
   }
 }
 makeSearch();
+
+// ! Start CheckOut Operation 
+//btn_cart_check
+btn_cart_check.addEventListener('click', async (e) => {
+  e.preventDefault();
+
+  const user = auth.currentUser;
+  if (!user) {
+    Swal.fire({
+      icon: 'info',
+      title: 'Please login first',
+      confirmButtonText: 'OK'
+    });
+    return;
+  }
+  const userId = user.uid;
+  const userRef = doc(db, 'users', userId);
+
+  try {
+    const userSnap = await getDoc(userRef);
+    if (!userSnap.exists()) {
+      Swal.fire({
+        icon: 'error',
+        title: 'User data not found!',
+        confirmButtonText: 'OK'
+      });
+      return;
+    }
+
+    const userData = userSnap.data();
+    const cartItems = userData.products_cart || [];
+    if (cartItems.length === 0) {
+      Swal.fire({
+        icon: 'info',
+        title: 'Your cart is empty!',
+        confirmButtonText: 'OK'
+      });
+      return;
+    }
+
+    const totalPrice = Number(price_cart_total.textContent.replace("$", ""));
+
+    await addDoc(collection(db, "orders"), {
+      userId: userId,
+      products: cartItems,
+      total: totalPrice,
+      status: "pending",
+      createdAt: serverTimestamp()
+    });
+
+    await updateDoc(userRef, { products_cart: [] });
+    localStorage.removeItem("cart");
+    displayItem();   
+    getTotalPrice();
+    getCount();
+    updateAddButtons();
+
+    Swal.fire({
+      icon: 'success',
+      title: 'Order placed successfully!',
+      confirmButtonText: 'OK'
+    });
+    setTimeout(() => {
+      window.location.reload()
+    }, 1000);
+  } catch (err) {
+    console.error("Error at checkout:", err);
+    Swal.fire({
+      icon: 'error',
+      title: 'Failed to place order.',
+      text: err.message,
+      confirmButtonText: 'OK'
+    });
+  }
+});

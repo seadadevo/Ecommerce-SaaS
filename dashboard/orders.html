@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Orders</title>
     <link rel="stylesheet" href="../dashboard/css/style.css" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -16,12 +16,10 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css"
     />
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-</head>
-<body>
- <main>
-
- 
-     <div class="sidebar">
+  </head>
+  <body>
+    <main>
+      <div class="sidebar">
         <h3>Dashboard</h3>
         <ul>
           <li>
@@ -87,7 +85,24 @@
             <input type="search" placeholder="Type A Keyword" />
             <img src="" alt="" />
           </div>
+        </div>
+        <div class="table-container">
+          <table id="productsTable">
+            <thead>
+              <tr>
+                <th>User</th>
+                <th>Products</th>
+                <th>Total</th>
+                <th>Status</th>
+                <th>Change Status</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+
+        <button class="showMoreBtn">Show More</button>
       </div>
     </main>
-</body>
+  </body>
 </html>
