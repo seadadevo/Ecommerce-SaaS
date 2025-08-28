@@ -10,6 +10,28 @@
 // ! Start Utility
 @import "./utility";
 
+// ! Scroll to top btn 
+#scrollTopBtn {
+  display: none; 
+  position: fixed;
+  bottom: 40px;
+  right: 40px;
+  z-index: 100;
+  font-size: 18px;
+  border: none;
+  outline: none;
+  background-color: #1e293b;
+  color: white;
+  cursor: pointer;
+  padding: 12px 16px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  transition: background-color 0.3s;
+}
+
+#scrollTopBtn:hover {
+  background-color: #374151;
+}
 // ! Start Cart
 @import "./cart";
 

@@ -11,9 +11,26 @@ footer {
       .big_row {
         width: 40%;
   
-        .logo_footer {
-          width: 180px;
+        .logo {
+        width: 200px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 13px;
+        i {
+          color: #ff8716;
+          font-size: 26px;
+          text-shadow: 4px 0px 5px #573f3f;
         }
+        p{
+              font-size: 21px;
+    font-weight: bold;
+    color: #eaeaea;
+    span {
+      font-size: 31px;
+    }
+        }
+      }
   
         p {
           width: 90%;

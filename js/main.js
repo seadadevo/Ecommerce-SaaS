@@ -33,6 +33,23 @@ const checkCart = document.querySelector(".items_in_cart1");
 const iconOpenCart = document.querySelector(".header_icons .iconOpen");
 const iconCloseCart = document.querySelector(".top_cart .close_cart");
 
+const scrollBtn = document.getElementById("scrollTopBtn");
+
+window.onscroll = function() {
+  if (document.body.scrollTop > 200 || document.documentElement.scrollTop > 200) {
+    scrollBtn.style.display = "block";
+  } else {
+    scrollBtn.style.display = "none";
+  }
+};
+
+scrollBtn.addEventListener("click", () => {
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth"
+  });
+});
+
 category_btn_menu.addEventListener("click", () => {
   category_nav_list.classList.toggle("active");
 });

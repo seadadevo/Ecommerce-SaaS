@@ -22,25 +22,41 @@ header {
 
       @include media(1024px) {
         flex-wrap: wrap;
-        .search_box{ 
+        .search_box {
           order: 3;
           width: 80%;
           margin: 20px auto 0;
 
-          select{ 
+          select {
             width: 200px;
           }
-          input{ 
+          input {
             width: calc(100% - 200px);
           }
-
         }
         .logo {
           width: 140px;
         }
       }
       .logo {
-        width: 180px;
+        width: 200px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 13px;
+        i {
+          color: #ff8716;
+          font-size: 26px;
+          text-shadow: 4px 0px 5px #573f3f;
+        }
+        p{
+              font-size: 21px;
+    font-weight: bold;
+    color: #6a5b00;
+    span {
+      font-size: 31px;
+    }
+        }
       }
 
       .search_box {
@@ -50,13 +66,13 @@ header {
         border-radius: 2px;
         justify-content: space-between;
         background: var(--bg-color);
-        @include media(574px){
+        @include media(574px) {
           width: 100%;
-          input{ 
+          input {
             width: calc(100% - 140px);
           }
         }
-      
+
         .select_box {
           position: relative;
 
@@ -147,7 +163,7 @@ header {
       transform: translateY(-500%);
       z-index: -1;
     }
-    
+
     .container {
       display: flex;
       align-items: center;
@@ -161,7 +177,7 @@ header {
         @include media(1024px) {
           gap: 20px;
         }
-        .open_menu{
+        .open_menu {
           display: none;
           @include media(1024px) {
             display: block;
@@ -183,7 +199,7 @@ header {
           position: relative;
           @include media(1024px) {
             width: auto;
-            .category_btn{
+            .category_btn {
               gap: 10px;
             }
           }
@@ -255,7 +271,7 @@ header {
         .nav_links {
           display: flex;
           gap: 35px;
-          .close_menu{
+          .close_menu {
             display: none;
             @include media(1024px) {
               display: block;
@@ -277,7 +293,7 @@ header {
             padding-top: 100px;
             border: 1px solid #b5b5b5;
             transition: 0.3s;
-            &.active{
+            &.active {
               left: 0;
             }
             li {
@@ -285,7 +301,7 @@ header {
               height: auto;
             }
           }
-          
+
           li {
             &.active a {
               color: var(--main-color);

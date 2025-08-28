@@ -63,7 +63,11 @@ function renderTheData(thedata) {
         }" alt="#"></td>
         <td class="product_category">${product.category || "####"}</td>
         <td class="product_brand">${product.brand || "####"}</td>
-        <td  class="product_stock">${product.stock || "it's empty"} <span style = display:${product.stock < 10 ? "block": "none"}>product_${product.id} is less than 10</span></td>
+        <td  class="product_stock">${
+          product.stock || "it's empty"
+        } <span style = display:${
+      product.stock < 10 ? "block" : "none"
+    }>product_${product.id} is less than 10</span></td>
         <td class="product_Edit" data-id = '${
           product.id
         }'><a href="#" class="edit">Edit</a></td>
@@ -134,19 +138,15 @@ function renderTheData(thedata) {
           stock: Number(editProfileModeal.querySelector("#stock").value),
         };
 
-        tr.querySelector(".product_name").textContent =
-         updatedProduct.title;
+        tr.querySelector(".product_name").textContent = updatedProduct.title;
         tr.querySelector(".product_price").textContent =
           updatedProduct.price + "$";
-        tr.querySelector(".product_image img").src =
-          updatedProduct.image;
+        tr.querySelector(".product_image img").src = updatedProduct.image;
         tr.querySelector(".product_category").textContent =
           updatedProduct.category;
-        tr.querySelector(".product_brand").textContent =
-           updatedProduct.brand;
-        tr.querySelector(".product_stock").textContent =
-          updatedProduct.stock;
-          
+        tr.querySelector(".product_brand").textContent = updatedProduct.brand;
+        tr.querySelector(".product_stock").textContent = updatedProduct.stock;
+
         try {
           const productRef = doc(db, "products", product.firebaseId);
           await updateDoc(productRef, updatedProduct);

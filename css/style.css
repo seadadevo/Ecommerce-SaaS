@@ -69,6 +69,28 @@ body {
   }
 }
 
+#scrollTopBtn {
+  display: none;
+  position: fixed;
+  bottom: 40px;
+  right: 40px;
+  z-index: 100;
+  font-size: 18px;
+  border: none;
+  outline: none;
+  background-color: #1e293b;
+  color: white;
+  cursor: pointer;
+  padding: 12px 16px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transition: background-color 0.3s;
+}
+
+#scrollTopBtn:hover {
+  background-color: #374151;
+}
+
 .cart {
   position: fixed;
   top: 0;
@@ -248,7 +270,24 @@ header .top_header .container {
   }
 }
 header .top_header .container .logo {
-  width: 180px;
+  width: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 13px;
+}
+header .top_header .container .logo i {
+  color: #ff8716;
+  font-size: 26px;
+  text-shadow: 4px 0px 5px #573f3f;
+}
+header .top_header .container .logo p {
+  font-size: 21px;
+  font-weight: bold;
+  color: #6a5b00;
+}
+header .top_header .container .logo p span {
+  font-size: 31px;
 }
 header .top_header .container .search_box {
   width: 610px;
@@ -1136,8 +1175,25 @@ footer .container {
 footer .container .big_row {
   width: 40%;
 }
-footer .container .big_row .logo_footer {
-  width: 180px;
+footer .container .big_row .logo {
+  width: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 13px;
+}
+footer .container .big_row .logo i {
+  color: #ff8716;
+  font-size: 26px;
+  text-shadow: 4px 0px 5px #573f3f;
+}
+footer .container .big_row .logo p {
+  font-size: 21px;
+  font-weight: bold;
+  color: #eaeaea;
+}
+footer .container .big_row .logo p span {
+  font-size: 31px;
 }
 footer .container .big_row p {
   width: 90%;
