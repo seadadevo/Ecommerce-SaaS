@@ -3,12 +3,13 @@ import { apiUrl, renderCardContent } from "./products.js";
 import { getProductsFromFirebase } from "./products.js";
 import { attachProductLinksEvents, attachAddCartEvents } from "./products.js";
 import { updateAddButtons } from "../main.js";
+import { displayItem, getTotalPrice, getCount } from "../main.js";
 let other_product_swiper3 = document.querySelector(".other_product_swiper3");
 let paginationCounters = document.querySelector(".paginationPage .numbers");
 let backwardPagination = document.querySelector(".fa-backward-step");
 let forwardPagination = document.querySelector(".fa-forward-step");
 let paginationContainer = document.querySelector(".paginationPage");
-
+import { checkoutCart } from "../main.js";
 let firebaseProducts = await getProductsFromFirebase();
 let searchResults = JSON.parse(localStorage.getItem("searchResults")) || [];
 let searchInputValue = localStorage.getItem('searchQuery') || "";
@@ -220,3 +221,10 @@ setTimeout(() => {
   renderCheckBoxes('brands', brandBox)
   setupFilteredEvents()
 }, 100)
+
+
+
+const btn_cart_check = document.getElementById("btn_cart_check");
+const price_cart_total = document.querySelector(".price_cart_total");
+
+checkoutCart(btn_cart_check, price_cart_total, displayItem, getTotalPrice, getCount, updateAddButtons);

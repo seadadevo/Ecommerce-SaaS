@@ -31,7 +31,7 @@ const nav_menu = document.querySelector(".nav_links");
 const open_menu = document.querySelector(".open_menu");
 const close_menu = document.querySelector(".close_menu");
 const checkCart = document.querySelector(".items_in_cart1");
-const btn_cart_check = document.querySelector('.btn_cart_check');
+export const btn_cart_check = document.querySelector('.btn_cart_check');
 const iconOpenCart = document.querySelector(".header_icons .iconOpen");
 const iconCloseCart = document.querySelector(".top_cart .close_cart");
 
@@ -172,7 +172,7 @@ export async function addToCart(id, btn) {
 }
 
 // ! Display cards
-function displayItem() {
+export function displayItem() {
   let item_c = "";
   if (products_cart.length === 0) {
     item_c = `<p class="empty-cart">Your cart is empty</p>`;
@@ -279,7 +279,7 @@ document.addEventListener("click", (e) => {
 
 // ! Get Total Price
 const price_cart_total = document.querySelector(".price_cart_total");
-function getTotalPrice() {
+export function getTotalPrice() {
   let total = 0;
   for (let i = 0; i < products_cart.length; i++) {
     total += products_cart[i].price * products_cart[i].quantity;
@@ -290,7 +290,7 @@ function getTotalPrice() {
 // ! Get Count
 const count_item_header = document.querySelector(".count_item_header");
 const Count_item_cart = document.querySelector(".Count_item_cart");
-function getCount() {
+export function getCount() {
   count_item_header.textContent = products_cart.length;
   Count_item_cart.textContent = products_cart.length;
 }
@@ -389,75 +389,57 @@ makeSearch();
 
 // ! Start CheckOut Operation 
 //btn_cart_check
-btn_cart_check.addEventListener('click', async (e) => {
-  e.preventDefault();
+export async function checkoutCart(btn_cart_check, price_cart_total, displayItem, getTotalPrice, getCount, updateAddButtons) {
+  if (!btn_cart_check) return;
+  btn_cart_check.addEventListener('click', async (e) => {
+    e.preventDefault();
 
-  const user = auth.currentUser;
-  if (!user) {
-    Swal.fire({
-      icon: 'info',
-      title: 'Please login first',
-      confirmButtonText: 'OK'
-    });
-    return;
-  }
-  const userId = user.uid;
-  const userRef = doc(db, 'users', userId);
-
-  try {
-    const userSnap = await getDoc(userRef);
-    if (!userSnap.exists()) {
-      Swal.fire({
-        icon: 'error',
-        title: 'User data not found!',
-        confirmButtonText: 'OK'
-      });
+    const user = auth.currentUser;
+    if (!user) {
+      Swal.fire({ icon: 'info', title: 'Please login first', confirmButtonText: 'OK' });
       return;
     }
 
-    const userData = userSnap.data();
-    const cartItems = userData.products_cart || [];
-    if (cartItems.length === 0) {
-      Swal.fire({
-        icon: 'info',
-        title: 'Your cart is empty!',
-        confirmButtonText: 'OK'
+    const userId = user.uid;
+    const userRef = doc(db, 'users', userId);
+
+    try {
+      const userSnap = await getDoc(userRef);
+      if (!userSnap.exists()) {
+        Swal.fire({ icon: 'error', title: 'User data not found!', confirmButtonText: 'OK' });
+        return;
+      }
+
+      const userData = userSnap.data();
+      const cartItems = userData.products_cart || [];
+      if (cartItems.length === 0) {
+        Swal.fire({ icon: 'info', title: 'Your cart is empty!', confirmButtonText: 'OK' });
+        return;
+      }
+
+      const totalPrice = Number(price_cart_total.textContent.replace("$", ""));
+
+      await addDoc(collection(db, "orders"), {
+        userId,
+        products: cartItems,
+        total: totalPrice,
+        status: "pending",
+        createdAt: serverTimestamp()
       });
-      return;
+
+      await updateDoc(userRef, { products_cart: [] });
+      displayItem();
+      getTotalPrice();
+      getCount();
+      updateAddButtons();
+
+      Swal.fire({ icon: 'success', title: 'Order placed successfully!', confirmButtonText: 'OK' });
+      setTimeout(() => window.location.reload(), 1000);
+
+    } catch (err) {
+      console.error("Error at checkout:", err);
+      Swal.fire({ icon: 'error', title: 'Failed to place order.', text: err.message, confirmButtonText: 'OK' });
     }
-
-    const totalPrice = Number(price_cart_total.textContent.replace("$", ""));
-
-    await addDoc(collection(db, "orders"), {
-      userId: userId,
-      products: cartItems,
-      total: totalPrice,
-      status: "pending",
-      createdAt: serverTimestamp()
-    });
-
-    await updateDoc(userRef, { products_cart: [] });
-    localStorage.removeItem("cart");
-    displayItem();   
-    getTotalPrice();
-    getCount();
-    updateAddButtons();
-
-    Swal.fire({
-      icon: 'success',
-      title: 'Order placed successfully!',
-      confirmButtonText: 'OK'
-    });
-    setTimeout(() => {
-      window.location.reload()
-    }, 1000);
-  } catch (err) {
-    console.error("Error at checkout:", err);
-    Swal.fire({
-      icon: 'error',
-      title: 'Failed to place order.',
-      text: err.message,
-      confirmButtonText: 'OK'
-    });
-  }
-});
+  });
+}
+checkoutCart(btn_cart_check, price_cart_total, displayItem, getTotalPrice, getCount, updateAddButtons)
