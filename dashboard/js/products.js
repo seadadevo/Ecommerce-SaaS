@@ -67,9 +67,9 @@ function renderTheData(thedata) {
           product.stock || "it's empty"
         } <span style = display:${
       product.stock < 10 ? "block" : "none"
-    }>product_${product.id} is less than 10</span></td>
+    }>product_${product.title.split(" ").slice(0, 1)} is less than 10</span></td>
         <td class="product_Edit" data-id = '${
-          product.id
+          product.firebaseId
         }'><a href="#" class="edit">Edit</a></td>
         <td class="product_Delete" data-id = '${
           product.firebaseId
@@ -94,7 +94,7 @@ function renderTheData(thedata) {
           try {
             await deleteDoc(doc(db, "products", product.firebaseId));
             firebasData = firebasData.filter(
-              (p) => p.id !== product.firebaseId
+              (p) => p.firebaseId  !== product.firebaseId
             );
             tr.remove();
 

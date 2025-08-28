@@ -29,7 +29,7 @@ const nav_menu = document.querySelector(".nav_links");
 const open_menu = document.querySelector(".open_menu");
 const close_menu = document.querySelector(".close_menu");
 const checkCart = document.querySelector(".items_in_cart1");
-
+const btn_cart_check = document.querySelector('.btn_cart_check');
 const iconOpenCart = document.querySelector(".header_icons .iconOpen");
 const iconCloseCart = document.querySelector(".top_cart .close_cart");
 
