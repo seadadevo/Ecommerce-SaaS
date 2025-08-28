@@ -443,6 +443,21 @@ main .content .table-container #productsTable tbody tr td {
   color: #334155;
   white-space: nowrap;
 }
+main .content .table-container #productsTable tbody tr td.product_stock {
+  height: 128px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+main .content .table-container #productsTable tbody tr td.product_stock span {
+  color: #fff;
+  background: red;
+  padding: 4px 7px;
+  font-size: 10px;
+  border-radius: 10px;
+}
 main .content .table-container #productsTable tbody tr td img {
   border-radius: 8px;
   -o-object-fit: cover;

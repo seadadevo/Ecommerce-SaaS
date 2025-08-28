@@ -63,7 +63,7 @@ function renderTheData(thedata) {
         }" alt="#"></td>
         <td class="product_category">${product.category || "####"}</td>
         <td class="product_brand">${product.brand || "####"}</td>
-        <td class="product_stock">${product.stock || "it's empty"}</td>
+        <td  class="product_stock">${product.stock || "it's empty"} <span style = display:${product.stock < 10 ? "block": "none"}>product_${product.id} is less than 10</span></td>
         <td class="product_Edit" data-id = '${
           product.id
         }'><a href="#" class="edit">Edit</a></td>
