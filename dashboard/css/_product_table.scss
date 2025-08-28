@@ -1,20 +1,19 @@
 .table-container {
   width: 95%;
-  overflow-x: auto; 
-  -webkit-overflow-scrolling: touch; 
-margin-inline: 20px;
-margin-right: 20px;
-    margin-bottom: 40px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  margin-inline: 20px;
+  margin-bottom: 40px;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  display: block;
   #productsTable {
     width: 100%;
-    min-width: 800px; 
+    min-width: 800px;
     border-collapse: collapse;
     font-family: "Segoe UI", sans-serif;
     font-size: 14px;
     background: #fff;
-    border-radius: 12px;
-    overflow: hidden;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
 
     thead {
       background: #1e293b;
@@ -25,7 +24,7 @@ margin-right: 20px;
         text-align: left;
         font-weight: 600;
         letter-spacing: 0.5px;
-        white-space: nowrap; 
+        white-space: nowrap;
       }
     }
 

@@ -77,8 +77,8 @@ ul {
   display: block;
 }
 
-/* ! Start Profile model */
-#profileModal {
+/* ! Start Profile modal and Edit Modal */
+#profileModal, #profileModalEdit {
   position: fixed;
   width: 300px;
   padding: 20px;
@@ -92,39 +92,41 @@ ul {
   display: none;
 }
 
-#profileModal.active {
+#profileModal.active, #profileModalEdit.active {
   display: block;
 }
 
-#profileModal .container {
+#profileModal .container, #profileModalEdit .container {
   padding: 10px;
   background: #fff;
   width: 100%;
   border-radius: 10px;
 }
 
-#profileModal .container h3 {
+#profileModal .container h3, #profileModalEdit .container h3 {
   width: 100%;
   font-size: 22px;
 }
 
-#profileModal .container .box {
+#profileModal .container .box, #profileModalEdit .container .box {
   margin-top: 10px;
 }
 
-#profileModal .container .box .addProductForm {
+#profileModal .container .box .addProductForm, #profileModalEdit .container .box .editProductModal {
   display: flex;
   align-items: flex-start;
   justify-content: center;
   flex-direction: column;
 }
 
-#profileModal .container .box .addProductForm label {
+#profileModal .container .box .addProductForm label,
+#profileModalEdit .container .box .editProductModal label {
   font-size: 12px;
   padding-bottom: 3px;
 }
 
-#profileModal .container .box .addProductForm input {
+#profileModal .container .box .addProductForm input,
+#profileModalEdit .container .box .editProductModal input {
   width: 100%;
   padding: 10px;
   border-radius: 10px;
@@ -132,11 +134,13 @@ ul {
   margin-bottom: 10px;
 }
 
-#profileModal .container .box .addProductForm input:focus {
+#profileModal .container .box .addProductForm input:focus,
+#profileModalEdit .container .box .editProductModal input:focus {
   border: 2px solid #d3b3b3;
 }
 
-#profileModal .container .buttons {
+#profileModal .container .buttons,
+#profileModalEdit .container .buttons {
   display: flex;
   align-items: center;
   justify-content: flex-end;
@@ -145,7 +149,8 @@ ul {
   margin: 20px 10px 10px 0;
 }
 
-#profileModal .container .buttons button {
+#profileModal .container .buttons button,
+#profileModalEdit .container .buttons button {
   padding: 10px 18px;
   background: #d5d5d5;
   border-radius: 10px;
@@ -401,8 +406,10 @@ main .content .table-container {
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
   margin-inline: 20px;
-  margin-right: 20px;
   margin-bottom: 40px;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  display: block;
 }
 main .content .table-container #productsTable {
   width: 100%;
@@ -411,9 +418,6 @@ main .content .table-container #productsTable {
   font-family: "Segoe UI", sans-serif;
   font-size: 14px;
   background: #fff;
-  border-radius: 12px;
-  overflow: hidden;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
 }
 main .content .table-container #productsTable thead {
   background: #1e293b;
