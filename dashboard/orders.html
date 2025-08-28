@@ -81,13 +81,10 @@
         </div>
         <div class="main-title">Orders</div>
         <div class="head_product">
-          <div class="search">
-            <input type="search" placeholder="Type A Keyword" />
-            <img src="" alt="" />
-          </div>
+          
         </div>
         <div class="table-container">
-          <table id="productsTable">
+          <table style="margin-top: 30px;" id="productsTable">
             <thead>
               <tr>
                 <th>User</th>
@@ -104,5 +101,9 @@
         <button class="showMoreBtn">Show More</button>
       </div>
     </main>
+    <script type="module">
+      import { app, analytics } from "../js/firebaseConfig.js";
+    </script>
+    <script type="module" src="../dashboard/js/orders.js"></script>
   </body>
 </html>
